@@ -1,0 +1,53 @@
+# Byte-compiled / temporary files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Virtual environment
+venv/
+env/
+*.venv
+*.env
+
+# Pipenv environment files
+Pipfile
+Pipfile.lock
+
+# Django Secret Key
+.env
+
+# Database files
+*.sqlite3
+db.sqlite3
+
+# Media and static files (optional)
+# media/
+# static/
+
+# Logs and debug files
+*.log
+*.out
+*.err
+
+# Cache files
+*.swp
+*.swo
+*.swn
+*.bak
+
+# Django migrations (optional, if you regenerate them frequently)
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# VS Code settings (optional)
+.vscode/
+
+# JetBrains IDEs (PyCharm, IntelliJ)
+.idea/
+
+# MacOS system files (if using macOS)
+.DS_Store
+
+# Compiled C extensions
+*.so
