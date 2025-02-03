@@ -1,45 +1,110 @@
+import django
 import os
-import re
-import requests
+import unittest
+import markdown
+from datetime import datetime
+from io import StringIO
+from unittest.runner import TextTestResult
 
-# GitHub repository details
-repo = "Dhanrajshyam/LittleLemon"
-workflow_run_url = "https://api.github.com/repos/{}/actions/runs".format(repo)
-latest_run = requests.get(workflow_run_url).json()['workflow_runs'][0]
+# Django settings setup
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "LittleLemon.settings")
+django.setup()
 
-# Get the latest workflow run ID
-run_id = latest_run['id']
+# Test directories
+TEST_CATEGORIES = {
+    "Models": "Restaurant.tests.test_models",
+    "Serializers": "Restaurant.tests.test_serializers",
+    "Views": "Restaurant.tests.test_views",
+}
 
-# Fetch test results from the latest run
-job_url = f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/jobs"
-jobs = requests.get(job_url).json()
+# Test results file
+TEST_RESULTS_FILE = "TEST_RESULTS.md"
 
-# Extract the test logs (you'll need to find the correct job name for your test job)
-for job in jobs['jobs']:
-    if job['name'] == 'test':  # Replace 'test' with your actual test job name
-        test_log_url = job['steps'][0]['logs_url']
-        test_log = requests.get(test_log_url).json()['logs']
-        
-        # Parse the test results from the logs
-        passed_tests = []
-        failed_tests = []
-        
-        for line in test_log:
-            if 'PASSED' in line:
-                passed_tests.append(line.strip())
-            elif 'FAILED' in line:
-                failed_tests.append(line.strip())
-        
-        # Update the markdown file with the test results
-        with open('TEST_RESULTS.md', 'r') as file:
-            md_content = file.read()
-        
-        # Update the markdown content with dynamic results
-        md_content = re.sub(r'(?<=Models\n)(.|\n)*?(?=Serializers)', '', md_content)
-        md_content = md_content.replace("Models", "Models\n" + "\n".join(passed_tests))
-        md_content = md_content.replace("Serializers", "Serializers\n" + "\n".join(failed_tests))
+# Function to run tests and capture results
 
-        # Write back the updated markdown content
-        with open('TEST_RESULTS.md', 'w') as file:
-            file.write(md_content)
 
+def run_tests():
+    test_summary = {category: [] for category in TEST_CATEGORIES}
+
+    for category, test_module in TEST_CATEGORIES.items():
+        suite = unittest.defaultTestLoader.loadTestsFromName(test_module)
+        buffer = StringIO()
+        runner = unittest.TextTestRunner(stream=buffer, verbosity=2)
+        result = runner.run(suite)
+
+        for test_case in suite:
+            test_name = test_case._testMethodName
+            doc = test_case.shortDescription() or "No description available"
+            status = "✅" if test_name in [
+                t._testMethodName for t in result.successes] else "❌"
+            test_summary[category].append((test_name, doc, status))
+
+    return test_summary
+
+# Function to update TEST_RESULTS.md
+
+
+def update_test_results(test_summary):
+    markdown_content = f"""
+            # 🛠 Django Test Results
+
+            ![Django Tests](https://github.com/Dhanrajshyam/LittleLemon/actions/workflows/test.yml/badge.svg)
+
+            This file documents all the test cases executed in the Django project and their latest execution status in GitHub Actions.
+
+            ---
+
+            ## ✅ **How to Run Tests Locally**
+            Run the following command in your terminal to execute tests:
+            ```bash
+            python manage.py test --keepdb
+            ```
+            ---
+
+            ### 📝 Test Case Summary
+
+            """
+    for category, tests in test_summary.items():
+        markdown_content += f"\n#### {category}\n"
+        markdown_content += "| Test Case | Description | Status |\n"
+        markdown_content += "| --------- | ----------- | ------ |\n"
+        for test_name, doc, status in tests:
+            markdown_content += f"| `{test_name}` | {doc} | {status} |\n"
+
+    markdown_content += f"""
+
+            **Legend**: ✅ = Pass, ❌ = Fail
+
+            This summary updates automatically based on test runs.
+
+            ## 📌 GitHub Actions Status
+
+            ## 📊 Latest Test Execution Status:
+
+            ## 🔍 View Complete Test Logs:
+            [GitHub Actions Test Logs](https://github.com/Dhanrajshyam/LittleLemon/actions/workflows/test.yml)
+
+            ## 📢 How to Integrate This in Your Git Repo
+
+            Copy this file as `TEST_RESULTS.md` and place it in your repository root.
+
+            Commit & Push the file:
+            ```bash
+            git add TEST_RESULTS.md
+            git commit -m "Added test results markdown file"
+            git push origin main
+            ```
+
+            """
+    with open(TEST_RESULTS_FILE, "w", encoding="utf-8") as f:
+        f.write(markdown_content.strip())
+
+
+# Main function to execute the script
+def main():
+    test_summary = run_tests() 
+    update_test_results(test_summary) 
+    print("✅ TEST_RESULTS.md updated successfully!")
+
+if __name__ == "__main__":
+    main()
