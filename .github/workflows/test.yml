@@ -23,11 +23,14 @@ jobs:
           MYSQL_PASSWORD: testpassword
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping --host=localhost --user=testuser --password=testpassword" --health-interval=10s --health-timeout=5s --health-retries=5
+        options: --health-cmd="mysqladmin ping -h localhost -u testuser --password=testpassword" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Wait for MySQL to be Ready
+        run: sleep 20  # Wait for MySQL to fully initialize
 
       - name: Set Up Python
         uses: actions/setup-python@v2
@@ -41,6 +44,6 @@ jobs:
 
       - name: Run Tests
         env:
-          DATABASE_URL: "mysql://testuser:testpassword@localhost:3306/testdb"
+          DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:3306/testdb"
         run: |
           python manage.py test
