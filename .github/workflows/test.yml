@@ -30,12 +30,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Wait for MySQL to be Ready
-        run: sleep 20  # Wait for MySQL to fully initialize
+        run: sleep 30  # Increase the wait time if needed
 
       - name: Set Up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.10"
+          python-version: "3.13"
 
       - name: Install Dependencies
         run: |
@@ -44,6 +44,6 @@ jobs:
 
       - name: Run Tests
         env:
-          DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:3306/testdb"
+          DATABASE_URL: "mysql://testuser:testpassword@mysql:3306/testdb"  # Update the host to 'mysql'
         run: |
           python manage.py test
