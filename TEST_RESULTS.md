@@ -42,3 +42,21 @@ python manage.py test --keepdb
 
 This summary updates automatically based on test runs.
 
+## 📌 GitHub Actions Status
+
+## 📊 Latest Test Execution Status:
+
+## 🔍 View Complete Test Logs:
+[GitHub Actions Test Logs](https://github.com/Dhanrajshyam/LittleLemon/actions/workflows/test.yml)
+
+## 📢 How to Integrate This in Your Git Repo
+
+Copy this file as `TEST_RESULTS.md` and place it in your repository root.
+
+Commit & Push the file:
+```bash
+git add TEST_RESULTS.md
+git commit -m "Added test results markdown file"
+git push origin main
+
+
