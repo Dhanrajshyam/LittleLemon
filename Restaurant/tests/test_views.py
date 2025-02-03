@@ -11,7 +11,7 @@ class UserViewSetTest(TestCase):
         """Set up users for testing"""
         self.client = APIClient()
         self.user = User.objects.create_user(username="testuser", password="testpassword")
-        self.admin_user = User.objects.create_superuser(username="admin", password="adminpassword")
+        self.admin_user = User.objects.create_superuser(username="administrator", password="adminpassword")
 
         self.client.login(username="testuser", password="testpassword")
         self.user_url = "/api/users"

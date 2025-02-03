@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-@mvbih#nvlz%xs1thyud*#mlm97p+0g1mr)&6g_)c0$-os!rxz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 # Application definition
@@ -103,6 +103,7 @@ if os.getenv('GITHUB_ACTIONS'):  # Running in GitHub Actions
         }
     }
 else:  # Local development
+    ALLOWED_HOSTS.append('testserver')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
