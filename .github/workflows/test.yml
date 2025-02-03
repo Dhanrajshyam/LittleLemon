@@ -1,4 +1,4 @@
-name: Django Tests with MySQL
+name: Overall Test Status
 
 on:
   push:
