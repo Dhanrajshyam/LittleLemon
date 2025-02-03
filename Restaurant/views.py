@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from rest_framework import permissions, viewsets, status
-from .serializers import UserSerializer
+from .serializers import UserSerializer, MenuSerializer
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
+from .models import Menu, Booking
 
 # Create your views here.
 def index(request):
@@ -54,3 +56,8 @@ class UserViewSet(viewsets.ViewSet):
         object = get_object_or_404(User, pk=pk)
         object.delete()
         return Response({"message": "User deleted Successfully!"}, status=status.HTTP_200_OK)
+    
+    
+class MenuViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
