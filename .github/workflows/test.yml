@@ -23,14 +23,14 @@ jobs:
           MYSQL_PASSWORD: testpassword
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping -h localhost -u testuser --password=testpassword" --health-interval=10s --health-timeout=5s --health-retries=5
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1 -u testuser --password=testpassword" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
 
       - name: Wait for MySQL to be Ready
-        run: sleep 20  # Ensure MySQL is ready before running tests
+        run: sleep 30  # Increase wait time for MySQL to fully start
 
       - name: Set Up Python
         uses: actions/setup-python@v2
@@ -44,10 +44,6 @@ jobs:
 
       - name: Run Tests
         env:
-          MYSQL_DATABASE: testdb
-          MYSQL_USER: testuser
-          MYSQL_PASSWORD: testpassword
-          MYSQL_HOST: mysql  # Use the service name from the GitHub Actions configuration
-          MYSQL_PORT: 3306
+          GITHUB_ACTIONS: true  # Ensure Django settings switch automatically
         run: |
           python manage.py test
