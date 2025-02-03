@@ -96,6 +96,7 @@ if os.getenv('GITHUB_ACTIONS'):  # If running in GitHub Actions
             'PORT': '3306',
         }
     }
+    DATABASES['default']['TEST'] = {'NAME': 'testdb'}  # ✅ Prevent `test_testdb` creation
 else:  # Local development
     DATABASES = {
         'default': {
