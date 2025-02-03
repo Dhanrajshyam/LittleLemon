@@ -119,10 +119,12 @@ git push origin main
 ```
 
 """
-
-    with open(TEST_RESULTS_FILE, "w+", encoding="utf-8") as f:
-        f.write(markdown_content.strip())
-
+    if os.getenv('GITHUB_ACTIONS'): 
+        with open(TEST_RESULTS_FILE, "w+", encoding="utf-8") as f:
+            f.write(markdown_content.strip())
+    else:
+        with open('LittleLemon/TEST_RESULTS.md', "w+", encoding="utf-8") as f:
+            f.write(markdown_content.strip())
 
 # Main function to execute the script
 def main():
