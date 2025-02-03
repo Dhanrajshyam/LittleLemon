@@ -7,30 +7,27 @@ from datetime import datetime
 from django.utils import timezone  # Import Django's timezone-aware now()
 from django.contrib.auth.models import Permission
 
+
 class UserViewSetTest(TestCase):
     def setUp(self):
         """Set up users for testing"""
         self.client = APIClient()
-        self.user = User.objects.create_user(username="testuser", password="testpassword")
-        self.admin_user = User.objects.create_superuser(username="administrator", password="adminpassword")
-        
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword")
+        self.admin_user = User.objects.create_superuser(
+            username="administrator", password="adminpassword")
+
         # Grant permissions to test user
         permission = Permission.objects.get(codename='view_user')
         self.user.user_permissions.add(permission)
 
         self.client.login(username="testuser", password="testpassword")
         self.user_url = "/api/users"
-        
-
 
     def test_list_users_authenticated(self):
         """Authenticated user should be able to list users"""
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.user_url)
-        print('Inside test_list_users_authenticated')
-        print(f'Cookies: {self.client.cookies}')
-        print(f'Status Code: {response.status_code}')
-        print(f"Authenticated user: {self.user}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_users_unauthenticated(self):
@@ -39,11 +36,13 @@ class UserViewSetTest(TestCase):
         response = self.client.get(self.user_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
+
 class MenuViewSetTest(TestCase):
     def setUp(self):
         """Set up menu items"""
         self.client = APIClient()
-        self.menu_item = Menu.objects.create(title="Pizza", price=10.99, inventory=20)
+        self.menu_item = Menu.objects.create(
+            title="Pizza", price=10.99, inventory=20)
         self.menu_url = "/api/menu"
 
     def test_list_menu_items(self):
@@ -57,14 +56,17 @@ class MenuViewSetTest(TestCase):
         response = self.client.post(self.menu_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+
 class BookingViewSetTest(TestCase):
     def setUp(self):
         """Set up booking entries"""
         self.client = APIClient()
-        self.booking = Booking.objects.create(name="John Doe", no_of_guests=2, booking_date=timezone.now())
+        self.booking = Booking.objects.create(
+            name="John Doe", no_of_guests=2, booking_date=timezone.now())
 
         # Authenticate User
-        self.user = User.objects.create_user(username="testuser", password="testpassword")
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword")
         self.client.login(username="testuser", password="testpassword")
         self.booking_url = "/api/booking"
 
@@ -75,6 +77,7 @@ class BookingViewSetTest(TestCase):
 
     def test_create_booking(self):
         """Test booking creation"""
-        data = {"name": "Alice", "no_of_guests": 3, "booking_date": timezone.now()}
+        data = {"name": "Alice", "no_of_guests": 3,
+                "booking_date": timezone.now()}
         response = self.client.post(self.booking_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
