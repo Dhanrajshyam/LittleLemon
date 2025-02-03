@@ -87,6 +87,7 @@ WSGI_APPLICATION = 'Littlelemon.wsgi.application'
 
 
 if os.getenv('GITHUB_ACTIONS'):  # Running in GitHub Actions
+    ALLOWED_HOSTS.append('testserver')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
