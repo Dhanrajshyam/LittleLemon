@@ -22,7 +22,7 @@ TEST_CATEGORIES = {
 }
 
 # Test results file
-TEST_RESULTS_FILE = os.path.join(BASE_DIR, "TEST_RESULTS.md")
+TEST_RESULTS_FILE = "TEST_RESULTS.md"
 
 # Function to run tests and capture results
 
@@ -120,7 +120,7 @@ git push origin main
 
 """
 
-    with open(TEST_RESULTS_FILE, "w", encoding="utf-8") as f:
+    with open(TEST_RESULTS_FILE, "w+", encoding="utf-8") as f:
         f.write(markdown_content.strip())
 
 
