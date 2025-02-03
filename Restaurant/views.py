@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import permissions, viewsets, status
-from .serializers import UserSerializer, MenuSerializer
+from .serializers import UserSerializer, MenuSerializer, BookingSerializer
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -61,3 +61,8 @@ class UserViewSet(viewsets.ViewSet):
 class MenuViewSet(viewsets.ModelViewSet):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
+    
+class BookingViewSet(viewsets.ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class=BookingSerializer
+    permission_classes=[permissions.IsAuthenticated]
