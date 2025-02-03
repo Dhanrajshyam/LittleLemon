@@ -1,12 +1,13 @@
-
 import django
 import os
 # Django settings setup
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Littlelemon.settings")
 django.setup()
 
-from Restaurant.urls import urlpatterns
+from Restaurant.urls import router  # Import your router
+from collections import defaultdict
 from pathlib import Path
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -179,32 +180,73 @@ PROJECT_TREE = r"""
 """
 
 
-def generate_api_enpoints(url_patterns):
+def generate_api_endpoints_from_router(router):
+    endpoints = defaultdict(lambda: defaultdict(set))
+    descriptions = defaultdict(lambda: defaultdict(str))
     markdown_content = "## 🔗 API Endpoints\n\n"
     markdown_content += "| Endpoint | Method | Description |\n"
     markdown_content += "| -------- | ------ | ----------- |\n"
 
-    def process_urlpatterns(patterns, base_url=""):
-        nonlocal markdown_content
-        for pattern in patterns:
-            if hasattr(pattern, 'url_patterns'):
-                # This is an include() directive
-                process_urlpatterns(pattern.url_patterns, base_url + pattern.pattern.regex.pattern)
-            else:
-                endpoint = base_url + pattern.pattern.regex.pattern.replace('^', '').replace('$', '')
-                if hasattr(pattern.callback, 'view_class'): 
-                    methods = ", ".join(pattern.callback.view_class().http_method_names)
-                else: 
-                    methods = "GET, POST" 
-                # For simplicity, the description is left blank
-                markdown_content += f"| `{endpoint}` | {methods} | Description |\n"
-        markdown_content += "---"
-    process_urlpatterns(url_patterns)
+    def get_method_description(viewset, method_name):
+        method = getattr(viewset, method_name, None)
+        if method and method.__doc__:
+            return method.__doc__.strip()
+        return "Description"
+
+    for prefix, viewset, basename in router.registry:
+        methods = [method.upper() for method in viewset.http_method_names if method != 'options']
+        base_endpoint = f"/api/{prefix}"
+
+        # Extract description from viewset docstring
+        description = viewset.__doc__.strip() if viewset.__doc__ else "Description"
+
+        # Add base endpoint methods and descriptions
+        for method in methods:
+            method_name = method.lower()
+            endpoints[base_endpoint][method].add(method)
+            descriptions[base_endpoint][method] = description
+
+        # Add detailed endpoints with IDs and formats
+        for method in methods:
+            if method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
+                method_name = method.lower()
+                detail_endpoint = f"/api/{prefix}/<id>"
+                format_endpoint = f"/api/{prefix}/<id>.<format>"
+                list_format_endpoint = f"/api/{prefix}/.<format>"
+
+                detail_description = get_method_description(viewset, method_name)
+                endpoints[detail_endpoint][method].add(method)
+                descriptions[detail_endpoint][method] = detail_description
+
+                endpoints[format_endpoint][method].add(method)
+                descriptions[format_endpoint][method] = detail_description
+
+                endpoints[list_format_endpoint][method].add(method)
+                descriptions[list_format_endpoint][method] = description
+
+    for endpoint, methods_dict in endpoints.items():
+        for method, methods in methods_dict.items():
+            description = descriptions[endpoint][method]
+            allowed_methods = ", ".join(sorted(methods))
+            markdown_content += f"| `{endpoint}` | {allowed_methods} | {description} |\n"
+
+    return markdown_content
+
+# Example usage
+markdown_content = generate_api_endpoints_from_router(router)
+print(markdown_content)
+
+
+
+
+def generate_api_enpoints(router):
+    markdown_content =""
+    markdown_content += generate_api_endpoints_from_router(router)
     return markdown_content
 
 
-def generate_update_markdown(file, header, footer, project_path, api_urls):
-    api_enpoints = generate_api_enpoints(api_urls)
+def generate_update_markdown(file, header, footer, project_path, router):
+    api_enpoints = generate_api_enpoints(router)
     project_tree = project_path
     markdown = f"""
 {header}
@@ -222,7 +264,7 @@ def generate_update_markdown(file, header, footer, project_path, api_urls):
 
 def main():
     generate_update_markdown(
-        README_FILE, MARKDOWN_STATIC_CONTENT, MARKDOWN_FOOTER, PROJECT_TREE, urlpatterns)
+        README_FILE, MARKDOWN_STATIC_CONTENT, MARKDOWN_FOOTER, PROJECT_TREE, router)
     print(f"✅ {README_FILE} updated successfully!")
 
 
