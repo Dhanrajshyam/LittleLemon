@@ -5,6 +5,7 @@ from rest_framework import status
 from Restaurant.models import Menu, Booking
 from datetime import datetime
 from django.utils import timezone  # Import Django's timezone-aware now()
+from django.contrib.auth.models import Permission
 
 class UserViewSetTest(TestCase):
     def setUp(self):
@@ -12,14 +13,24 @@ class UserViewSetTest(TestCase):
         self.client = APIClient()
         self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.admin_user = User.objects.create_superuser(username="administrator", password="adminpassword")
+        
+        # Grant permissions to test user
+        permission = Permission.objects.get(codename='view_user')
+        self.user.user_permissions.add(permission)
 
         self.client.login(username="testuser", password="testpassword")
         self.user_url = "/api/users"
+        
+
 
     def test_list_users_authenticated(self):
         """Authenticated user should be able to list users"""
-        # self.client.force_authenticate(user=self.user)
+        self.client.force_authenticate(user=self.user)
         response = self.client.get(self.user_url)
+        print('Inside test_list_users_authenticated')
+        print(f'Cookies: {self.client.cookies}')
+        print(f'Status Code: {response.status_code}')
+        print(f"Authenticated user: {self.user}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_users_unauthenticated(self):
