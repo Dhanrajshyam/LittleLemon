@@ -1,3 +1,25 @@
+
+import django
+import os
+# Django settings setup
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Littlelemon.settings")
+django.setup()
+
+from Restaurant.urls import urlpatterns
+from pathlib import Path
+
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent
+
+# # Django settings setup
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Littlelemon.settings")
+# django.setup()
+
+# Readme file
+README_FILE = "README.md"
+
+MARKDOWN_STATIC_CONTENT = r"""
 # 🍋 Little Lemon
 
 Welcome to **Little Lemon**, a Django-based web application designed to manage and enhance restaurant operations. This project is part of the **Meta Back-End Developer Capstone** course and showcases essential backend development skills, including authentication, database management, and API integration.
@@ -61,31 +83,31 @@ Visit `http://127.0.0.1:8000/` in your browser.
 
 ---
 
+"""
 
-## 🔗 API Endpoints
+MARKDOWN_FOOTER = r"""
+---
 
-| Endpoint | Method | Description |
-| -------- | ------ | ----------- |
-| `\Z` | GET, POST | Description |
-| `^api/users` | GET, POST | Description |
-| `^api/users\.(?P<format>[a-z0-9]+)/?` | GET, POST | Description |
-| `^api/users/(?P<pk>[/.]+)` | GET, POST | Description |
-| `^api/users/(?P<pk>[/.]+)\.(?P<format>[a-z0-9]+)/?` | GET, POST | Description |
-| `^api/menu` | GET, POST | Description |
-| `^api/menu\.(?P<format>[a-z0-9]+)/?` | GET, POST | Description |
-| `^api/menu/(?P<pk>[/.]+)` | GET, POST | Description |
-| `^api/menu/(?P<pk>[/.]+)\.(?P<format>[a-z0-9]+)/?` | GET, POST | Description |
-| `^api/booking` | GET, POST | Description |
-| `^api/booking\.(?P<format>[a-z0-9]+)/?` | GET, POST | Description |
-| `^api/booking/(?P<pk>[/.]+)` | GET, POST | Description |
-| `^api/booking/(?P<pk>[/.]+)\.(?P<format>[a-z0-9]+)/?` | GET, POST | Description |
-| `^api/\Z` | get, post, put, patch, delete, head, options, trace | Description |
-| `^api/(?P<format>\.[a-z0-9]+/?)\Z` | get, post, put, patch, delete, head, options, trace | Description |
----| `^api\-auth/login/\Z` | get, post, put, patch, delete, head, options, trace | Description |
-| `^api\-auth/logout/\Z` | post, options | Description |
-------
-## 📂 Project Structure
+## 📜 License
 
+This project is for educational purposes as part of the **Meta Back-End Developer Capstone** course.
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! Feel free to contribute to this project by improving features, fixing bugs, or enhancing documentation.
+
+---
+
+## 📞 Contact
+
+For questions or collaborations, reach out via GitHub Issues.
+
+🚀 Happy coding!
+"""
+
+PROJECT_TREE = r"""
 ```
 📦LittleLemon
  ┣ 📂.github
@@ -154,24 +176,55 @@ Visit `http://127.0.0.1:8000/` in your browser.
  ┣ 📜update_readme.py
  ┗ 📜update_test_results.py
 ```
+"""
 
 
----
+def generate_api_enpoints(url_patterns):
+    markdown_content = "## 🔗 API Endpoints\n\n"
+    markdown_content += "| Endpoint | Method | Description |\n"
+    markdown_content += "| -------- | ------ | ----------- |\n"
 
-## 📜 License
+    def process_urlpatterns(patterns, base_url=""):
+        nonlocal markdown_content
+        for pattern in patterns:
+            if hasattr(pattern, 'url_patterns'):
+                # This is an include() directive
+                process_urlpatterns(pattern.url_patterns, base_url + pattern.pattern.regex.pattern)
+            else:
+                endpoint = base_url + pattern.pattern.regex.pattern.replace('^', '').replace('$', '')
+                if hasattr(pattern.callback, 'view_class'): 
+                    methods = ", ".join(pattern.callback.view_class().http_method_names)
+                else: 
+                    methods = "GET, POST" 
+                # For simplicity, the description is left blank
+                markdown_content += f"| `{endpoint}` | {methods} | Description |\n"
+        markdown_content += "---"
+    process_urlpatterns(url_patterns)
+    return markdown_content
 
-This project is for educational purposes as part of the **Meta Back-End Developer Capstone** course.
 
----
+def generate_update_markdown(file, header, footer, project_path, api_urls):
+    api_enpoints = generate_api_enpoints(api_urls)
+    project_tree = project_path
+    markdown = f"""
+{header}
+{api_enpoints}
+## 📂 Project Structure
+{project_tree}
+{footer}
+    """
 
-## 🤝 Contributing
+    with open(file, "w+", encoding="utf-8") as f:
+        f.write(markdown.strip())
 
-Pull requests are welcome! Feel free to contribute to this project by improving features, fixing bugs, or enhancing documentation.
+# Main function to execute the script
 
----
 
-## 📞 Contact
+def main():
+    generate_update_markdown(
+        README_FILE, MARKDOWN_STATIC_CONTENT, MARKDOWN_FOOTER, PROJECT_TREE, urlpatterns)
+    print(f"✅ {README_FILE} updated successfully!")
 
-For questions or collaborations, reach out via GitHub Issues.
 
-🚀 Happy coding!
+if __name__ == "__main__":
+    main()
