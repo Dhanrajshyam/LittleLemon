@@ -85,18 +85,23 @@ WSGI_APPLICATION = 'Littlelemon.wsgi.application'
 # }
 
 
-if os.getenv('GITHUB_ACTIONS'):  # If running in GitHub Actions
+
+if os.getenv('GITHUB_ACTIONS'):  # Running in GitHub Actions
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'testdb',  # Must match MYSQL_DATABASE in test.yml
-            'USER': 'testuser',  # Must match MYSQL_USER in test.yml
-            'PASSWORD': 'testpassword',  # Must match MYSQL_PASSWORD in test.yml
-            'HOST': '127.0.0.1',  # Use 127.0.0.1 instead of 'mysql'
+            'NAME': 'testdb',  # ✅ Prevent Django from renaming test DB
+            'USER': 'testuser',
+            'PASSWORD': 'testpassword',
+            'HOST': '127.0.0.1',
             'PORT': '3306',
+            'TEST': {
+                'NAME': 'testdb',  # ✅ Reuse existing testdb
+                'MIRROR': None,    # ✅ Ensure it doesn't use a different DB
+                'SERIALIZE': False # ✅ Prevent serialization overhead
+            },
         }
     }
-    DATABASES['default']['TEST'] = {'NAME': 'testdb'}  # ✅ Prevent `test_testdb` creation
 else:  # Local development
     DATABASES = {
         'default': {
@@ -109,6 +114,7 @@ else:  # Local development
             'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},
         }
     }
+
 
 
 # Password validation
