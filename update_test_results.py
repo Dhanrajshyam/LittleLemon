@@ -60,7 +60,7 @@ def process_test_case(test, result, test_summary, category):
     """Extract test details and status."""
     test_name = test.id().split('.')[-1]
     doc = test.shortDescription() or "No description available"
-    status = "✅PASS" if result else "❌FAIL"
+    status = "✅PASS" if result == True else "❌FAIL"
     test_summary[category].append((test_name, doc, status))
 
 
@@ -100,10 +100,6 @@ python manage.py test --keepdb
 
 This summary updates automatically based on test runs.
 
-## 📌 GitHub Actions Status
-
-## 📊 Latest Test Execution Status:
-
 ## 🔍 View Complete Test Logs:
 [GitHub Actions Test Logs](https://github.com/Dhanrajshyam/LittleLemon/actions/workflows/test.yml)
 
@@ -123,7 +119,7 @@ git push origin main
         with open(TEST_RESULTS_FILE, "w+", encoding="utf-8") as f:
             f.write(markdown_content.strip())
     else:
-        with open('LittleLemon/TEST_RESULTS.md', "w+", encoding="utf-8") as f:
+        with open('TEST_RESULTS.md', "w+", encoding="utf-8") as f:
             f.write(markdown_content.strip())
 
 # Main function to execute the script

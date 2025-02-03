@@ -46,10 +46,6 @@ python manage.py test --keepdb
 
 This summary updates automatically based on test runs.
 
-## 📌 GitHub Actions Status
-
-## 📊 Latest Test Execution Status:
-
 ## 🔍 View Complete Test Logs:
 [GitHub Actions Test Logs](https://github.com/Dhanrajshyam/LittleLemon/actions/workflows/test.yml)
 
