@@ -23,27 +23,39 @@ jobs:
           MYSQL_PASSWORD: testpassword
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping -h 127.0.0.1 -u testuser --password=testpassword" --health-interval=10s --health-timeout=5s --health-retries=5
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u testuser --password=testpassword"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
 
       - name: Wait for MySQL to be Ready
-        run: sleep 30  # Increase wait time for MySQL to fully start
+        run: sleep 20  # Ensure MySQL is fully initialized
+
+      # ✅ Fix: Grant Permissions to 'testuser' in MySQL
+      - name: Grant MySQL Privileges
+        run: |
+          sudo apt-get install mysql-client
+          mysql -h 127.0.0.1 -u root -proot -e "GRANT ALL PRIVILEGES ON testdb.* TO 'testuser'@'%' IDENTIFIED BY 'testpassword' WITH GRANT OPTION;"
+          mysql -h 127.0.0.1 -u root -proot -e "FLUSH PRIVILEGES;"
 
       - name: Set Up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.10"
+          python-version: "3.13"
 
       - name: Install Dependencies
         run: |
           pip install -r requirements.txt
           pip install pytest pytest-django mysqlclient
 
+      # ✅ Ensuring Django Uses the Correct Database in GitHub Actions
       - name: Run Tests
         env:
-          GITHUB_ACTIONS: true  # Ensure Django settings switch automatically
+          GITHUB_ACTIONS: true  # Tells Django to use GitHub-specific DB settings
         run: |
           python manage.py test
