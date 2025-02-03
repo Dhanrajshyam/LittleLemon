@@ -84,17 +84,30 @@ WSGI_APPLICATION = 'Littlelemon.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQL_DATABASE', 'littlelemon'),
-        'USER': os.getenv('MYSQL_USER', 'admindjango'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD', "admin"),
-        "HOST": os.getenv('MYSQL_HOST', '127.0.0.1'),
-        "PORT": os.getenv('MYSQL_PORT', "3306"),
-        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},
+
+if os.getenv('GITHUB_ACTIONS'):  # If running in GitHub Actions
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'testdb',  # Must match MYSQL_DATABASE in test.yml
+            'USER': 'testuser',  # Must match MYSQL_USER in test.yml
+            'PASSWORD': 'testpassword',  # Must match MYSQL_PASSWORD in test.yml
+            'HOST': '127.0.0.1',  # Use 127.0.0.1 instead of 'mysql'
+            'PORT': '3306',
+        }
     }
-}
+else:  # Local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('MYSQL_DATABASE', 'littlelemon'),
+            'USER': os.getenv('MYSQL_USER', 'admindjango'),
+            'PASSWORD': os.getenv('MYSQL_PASSWORD', "admin"),
+            'HOST': os.getenv('MYSQL_HOST', '127.0.0.1'),
+            'PORT': os.getenv('MYSQL_PORT', "3306"),
+            'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},
+        }
+    }
 
 
 # Password validation
