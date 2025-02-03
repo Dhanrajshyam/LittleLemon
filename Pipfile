@@ -9,7 +9,6 @@ djangorestframework = "*"
 djangorestframework-xml = "*"
 djangorestframework-csv = "*"
 pytest-django = "*"
-pytz = "*"
 
 [dev-packages]
 
