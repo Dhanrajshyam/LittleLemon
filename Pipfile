@@ -10,6 +10,7 @@ djangorestframework-xml = "*"
 djangorestframework-csv = "*"
 pytest-django = "*"
 requests = "*"
+markdown = "*"
 
 [dev-packages]
 
