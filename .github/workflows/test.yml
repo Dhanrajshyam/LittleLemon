@@ -34,13 +34,14 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Wait for MySQL to be Ready
-        run: sleep 20  # Ensure MySQL is fully initialized
+        run: sleep 20  # Ensures MySQL is fully initialized
 
-      # ✅ Fix: Grant Permissions to 'testuser' in MySQL
+      # ✅ Fix: Use CORRECT MySQL 8+ GRANT syntax
       - name: Grant MySQL Privileges
         run: |
           sudo apt-get install mysql-client
-          mysql -h 127.0.0.1 -u root -proot -e "GRANT ALL PRIVILEGES ON testdb.* TO 'testuser'@'%' IDENTIFIED BY 'testpassword' WITH GRANT OPTION;"
+          mysql -h 127.0.0.1 -u root -proot -e "CREATE USER IF NOT EXISTS 'testuser'@'%' IDENTIFIED BY 'testpassword';"
+          mysql -h 127.0.0.1 -u root -proot -e "GRANT ALL PRIVILEGES ON testdb.* TO 'testuser'@'%';"
           mysql -h 127.0.0.1 -u root -proot -e "FLUSH PRIVILEGES;"
 
       - name: Set Up Python
@@ -53,9 +54,8 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-django mysqlclient
 
-      # ✅ Ensuring Django Uses the Correct Database in GitHub Actions
       - name: Run Tests
         env:
-          GITHUB_ACTIONS: true  # Tells Django to use GitHub-specific DB settings
+          GITHUB_ACTIONS: true  # Ensures Django uses GitHub-specific DB settings
         run: |
           python manage.py test
