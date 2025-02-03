@@ -16,7 +16,7 @@ def index(request):
 
 class UserViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
-    
+
     def list(self, request):
         queryset = User.objects.all()
         users = UserSerializer(queryset, many=True, context = {'request': request})
