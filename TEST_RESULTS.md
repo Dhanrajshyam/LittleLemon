@@ -1,19 +1,24 @@
 # 🛠 Django Test Results
 
-![Django Tests](https://github.com/Dhanrajshyam/LittleLemon/actions/workflows/test.yml/badge.svg)
+![Overall Status](https://github.com/Dhanrajshyam/LittleLemon/actions/workflows/test.yml/badge.svg)
 
 This file documents all the test cases executed in the Django project and their latest execution status in GitHub Actions.
 
 ---
 
-## ✅ **How to Run Tests Locally**
-Run the following command in your terminal to execute tests:
-```bash
-python manage.py test --keepdb
-```
+### 📝 Test Progress
+
+![Test Speedometer](speedometer.svg)
+
 ---
 
 ### 📝 Test Case Summary
+#### ![Test Coverage](https://img.shields.io/badge/Tests-✅_100%25_Passed-green)
+
+- **Total Test Cases:** 🧪 `13`
+- **Passed:** ✅ `13`
+- **Failed:** ❌ `0`
+
 
             
 #### Models
@@ -46,8 +51,19 @@ python manage.py test --keepdb
 
 This summary updates automatically based on test runs.
 
+---
+
 ## 🔍 View Complete Test Logs:
 [GitHub Actions Test Logs](https://github.com/Dhanrajshyam/LittleLemon/actions/workflows/test.yml)
+
+---
+
+## ✅ **How to Run Tests Locally**
+Run the following command in your terminal to execute tests:
+```bash
+python manage.py test --keepdb
+```
+---
 
 ## 📢 How to Integrate This in Your Git Repo
 
