@@ -77,3 +77,21 @@ jobs:
             git commit -m "Update test results in markdown"
             git push
           fi
+
+      # Update test results markdown
+      - name: Update Readme in Markdown
+        run: |
+          python update_readme.py
+
+      # Commit and push the updated markdown file
+      - name: Commit and Push Updated Results
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add README.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update readme in markdown"
+            git push
+          fi
