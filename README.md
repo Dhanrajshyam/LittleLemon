@@ -4,6 +4,7 @@ Welcome to **Little Lemon**, a Django-based web application designed to manage a
 
 ---
 ![Django Tests](https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/actions/workflows/tests.yml/badge.svg)
+![Django Tests](https://github.com/Dhanrajshyam/LittleLemon/blob/main/.github/workflows/test.yml/badge.svg)
 ---
 
 ## 📌 Features
