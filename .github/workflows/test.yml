@@ -59,3 +59,17 @@ jobs:
           GITHUB_ACTIONS: true  # Ensures Django uses GitHub-specific DB settings
         run: |
           python manage.py test --keepdb  # ✅ Prevents Django from dropping/recreating the DB
+
+      # Update test results markdown
+      - name: Update Test Results in Markdown
+        run: |
+          python update_test_results.py
+
+      # Commit and push the updated markdown file
+      - name: Commit and Push Updated Results
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add TEST_RESULTS.md
+          git commit -m "Update test results in markdown"
+          git push
