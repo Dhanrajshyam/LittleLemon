@@ -30,12 +30,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Wait for MySQL to be Ready
-        run: sleep 30  # Increase the wait time if needed
+        run: sleep 20  # Ensure MySQL is ready before running tests
 
       - name: Set Up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.13"
+          python-version: "3.10"
 
       - name: Install Dependencies
         run: |
@@ -44,6 +44,10 @@ jobs:
 
       - name: Run Tests
         env:
-          DATABASE_URL: "mysql://testuser:testpassword@mysql:3306/testdb"  # Update the host to 'mysql'
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpassword
+          MYSQL_HOST: mysql  # Use the service name from the GitHub Actions configuration
+          MYSQL_PORT: 3306
         run: |
           python manage.py test
