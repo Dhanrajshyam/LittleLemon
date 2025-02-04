@@ -64,74 +64,47 @@ Visit `http://127.0.0.1:8000/` in your browser.
 
 ## 🔗 API Endpoints
 
-| Endpoint | Method | Description |
-| -------- | ------ | ----------- |
-| `/api/users` | GET | Handles user-related operations. |
-| `/api/users` | POST | Handles user-related operations. |
-| `/api/users` | PUT | Handles user-related operations. |
-| `/api/users` | PATCH | Handles user-related operations. |
-| `/api/users` | DELETE | Handles user-related operations. |
-| `/api/users` | HEAD | Handles user-related operations. |
-| `/api/users` | TRACE | Handles user-related operations. |
-| `/api/users/<id>` | GET | Description |
-| `/api/users/<id>` | POST | Description |
-| `/api/users/<id>` | PUT | Description |
-| `/api/users/<id>` | PATCH | Description |
-| `/api/users/<id>` | DELETE | Delete a user by ID |
-| `/api/users/<id>.<format>` | GET | Description |
-| `/api/users/<id>.<format>` | POST | Description |
-| `/api/users/<id>.<format>` | PUT | Description |
-| `/api/users/<id>.<format>` | PATCH | Description |
-| `/api/users/<id>.<format>` | DELETE | Delete a user by ID |
-| `/api/users/.<format>` | GET | Handles user-related operations. |
-| `/api/users/.<format>` | POST | Handles user-related operations. |
-| `/api/users/.<format>` | PUT | Handles user-related operations. |
-| `/api/users/.<format>` | PATCH | Handles user-related operations. |
-| `/api/users/.<format>` | DELETE | Handles user-related operations. |
-| `/api/menu` | GET | Handles menu-related operations. |
-| `/api/menu` | POST | Handles menu-related operations. |
-| `/api/menu` | PUT | Handles menu-related operations. |
-| `/api/menu` | PATCH | Handles menu-related operations. |
-| `/api/menu` | DELETE | Handles menu-related operations. |
-| `/api/menu` | HEAD | Handles menu-related operations. |
-| `/api/menu` | TRACE | Handles menu-related operations. |
-| `/api/menu/<id>` | GET | Description |
-| `/api/menu/<id>` | POST | Description |
-| `/api/menu/<id>` | PUT | Description |
-| `/api/menu/<id>` | PATCH | Description |
-| `/api/menu/<id>` | DELETE | Description |
-| `/api/menu/<id>.<format>` | GET | Description |
-| `/api/menu/<id>.<format>` | POST | Description |
-| `/api/menu/<id>.<format>` | PUT | Description |
-| `/api/menu/<id>.<format>` | PATCH | Description |
-| `/api/menu/<id>.<format>` | DELETE | Description |
-| `/api/menu/.<format>` | GET | Handles menu-related operations. |
-| `/api/menu/.<format>` | POST | Handles menu-related operations. |
-| `/api/menu/.<format>` | PUT | Handles menu-related operations. |
-| `/api/menu/.<format>` | PATCH | Handles menu-related operations. |
-| `/api/menu/.<format>` | DELETE | Handles menu-related operations. |
-| `/api/booking` | GET | Handles booking-related operations. |
-| `/api/booking` | POST | Handles booking-related operations. |
-| `/api/booking` | PUT | Handles booking-related operations. |
-| `/api/booking` | PATCH | Handles booking-related operations. |
-| `/api/booking` | DELETE | Handles booking-related operations. |
-| `/api/booking` | HEAD | Handles booking-related operations. |
-| `/api/booking` | TRACE | Handles booking-related operations. |
-| `/api/booking/<id>` | GET | Description |
-| `/api/booking/<id>` | POST | Description |
-| `/api/booking/<id>` | PUT | Description |
-| `/api/booking/<id>` | PATCH | Description |
-| `/api/booking/<id>` | DELETE | Description |
-| `/api/booking/<id>.<format>` | GET | Description |
-| `/api/booking/<id>.<format>` | POST | Description |
-| `/api/booking/<id>.<format>` | PUT | Description |
-| `/api/booking/<id>.<format>` | PATCH | Description |
-| `/api/booking/<id>.<format>` | DELETE | Description |
-| `/api/booking/.<format>` | GET | Handles booking-related operations. |
-| `/api/booking/.<format>` | POST | Handles booking-related operations. |
-| `/api/booking/.<format>` | PUT | Handles booking-related operations. |
-| `/api/booking/.<format>` | PATCH | Handles booking-related operations. |
-| `/api/booking/.<format>` | DELETE | Handles booking-related operations. |
+|   Name   | API Endpoint | Http Method | Available Format | Description |
+| -------- | ------------ | ----------- | ---------------- | ----------- |
+|**home**|`^\Z`|get|html|Homepage of the application|
+|**user-list**|`^api/^users$`|get|json,api,xml,csv|Retrieve a list of users|
+||`^api/^users$`|post|json,api,xml,csv|Create a new user|
+||`^api/^users\.(?P<format>[a-z0-9]+)/?$`|get|json,api,xml,csv|Retrieve a list of users|
+||`^api/^users\.(?P<format>[a-z0-9]+)/?$`|post|json,api,xml,csv|Create a new user|
+|**user-detail**|`^api/^users/(?P<pk>[^/.]+)$`|get|json,api,xml,csv|Retrieve a user by ID|
+||`^api/^users/(?P<pk>[^/.]+)$`|put|json,api,xml,csv|Update a user by ID|
+||`^api/^users/(?P<pk>[^/.]+)$`|patch|json,api,xml,csv|Partially update a user by ID|
+||`^api/^users/(?P<pk>[^/.]+)\.(?P<format>[a-z0-9]+)/?$`|get|json,api,xml,csv|Retrieve a user by ID|
+||`^api/^users/(?P<pk>[^/.]+)\.(?P<format>[a-z0-9]+)/?$`|put|json,api,xml,csv|Update a user by ID|
+||`^api/^users/(?P<pk>[^/.]+)\.(?P<format>[a-z0-9]+)/?$`|patch|json,api,xml,csv|Partially update a user by ID|
+|**menu-list**|`^api/^menu$`|get|json,api,xml,csv|Retrieve a list of menu items|
+||`^api/^menu$`|post|json,api,xml,csv|Create a new menu|
+||`^api/^menu\.(?P<format>[a-z0-9]+)/?$`|get|json,api,xml,csv|Retrieve a list of menu items|
+||`^api/^menu\.(?P<format>[a-z0-9]+)/?$`|post|json,api,xml,csv|Create a new menu|
+|**menu-detail**|`^api/^menu/(?P<pk>[^/.]+)$`|get|json,api,xml,csv|Retrieve a menu item by ID|
+||`^api/^menu/(?P<pk>[^/.]+)$`|put|json,api,xml,csv|Update a menu item by ID|
+||`^api/^menu/(?P<pk>[^/.]+)$`|patch|json,api,xml,csv|Partially update a menu item by ID|
+||`^api/^menu/(?P<pk>[^/.]+)$`|delete|json,api,xml,csv|Delete a menu by ID|
+||`^api/^menu/(?P<pk>[^/.]+)\.(?P<format>[a-z0-9]+)/?$`|get|json,api,xml,csv|Retrieve a menu item by ID|
+||`^api/^menu/(?P<pk>[^/.]+)\.(?P<format>[a-z0-9]+)/?$`|put|json,api,xml,csv|Update a menu item by ID|
+||`^api/^menu/(?P<pk>[^/.]+)\.(?P<format>[a-z0-9]+)/?$`|patch|json,api,xml,csv|Partially update a menu item by ID|
+||`^api/^menu/(?P<pk>[^/.]+)\.(?P<format>[a-z0-9]+)/?$`|delete|json,api,xml,csv|Delete a menu by ID|
+|**booking-list**|`^api/^booking$`|get|json,api,xml,csv|Retrieve a list of bookings|
+||`^api/^booking$`|post|json,api,xml,csv|Create a new booking|
+||`^api/^booking\.(?P<format>[a-z0-9]+)/?$`|get|json,api,xml,csv|Retrieve a list of bookings|
+||`^api/^booking\.(?P<format>[a-z0-9]+)/?$`|post|json,api,xml,csv|Create a new booking|
+|**booking-detail**|`^api/^booking/(?P<pk>[^/.]+)$`|get|json,api,xml,csv|Retrieve a booking by ID|
+||`^api/^booking/(?P<pk>[^/.]+)$`|put|json,api,xml,csv|Update a booking by ID|
+||`^api/^booking/(?P<pk>[^/.]+)$`|patch|json,api,xml,csv|Partially update a booking by ID|
+||`^api/^booking/(?P<pk>[^/.]+)$`|delete|json,api,xml,csv|Delete a booking by ID|
+||`^api/^booking/(?P<pk>[^/.]+)\.(?P<format>[a-z0-9]+)/?$`|get|json,api,xml,csv|Retrieve a booking by ID|
+||`^api/^booking/(?P<pk>[^/.]+)\.(?P<format>[a-z0-9]+)/?$`|put|json,api,xml,csv|Update a booking by ID|
+||`^api/^booking/(?P<pk>[^/.]+)\.(?P<format>[a-z0-9]+)/?$`|patch|json,api,xml,csv|Partially update a booking by ID|
+||`^api/^booking/(?P<pk>[^/.]+)\.(?P<format>[a-z0-9]+)/?$`|delete|json,api,xml,csv|Delete a booking by ID|
+|**api-root**|`^api/^\Z`|get|html|The default basic root view for DefaultRouter|
+||`^api/^(?P<format>\.[a-z0-9]+/?)\Z`|get|html|The default basic root view for DefaultRouter|
+|**login**|`^api\-auth/^login/\Z`|get|html|Display the login form and handle the login action.|
+|**logout**|`^api\-auth/^logout/\Z`|get|html|Log out the user and display the 'You are logged out' message.|
 
 ## 📂 Project Structure
 
