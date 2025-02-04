@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent
 # django.setup()
 
 # Readme file
-README_FILE = BASE_DIR.joinpath("README.md")
+README_FILE = "README.md"
 
 MARKDOWN_STATIC_CONTENT = r"""
 # 🍋 Little Lemon
