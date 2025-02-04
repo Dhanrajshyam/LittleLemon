@@ -8,7 +8,7 @@ Welcome to **Little Lemon**, a Django-based web application designed to manage a
 
 - 🛠 **Django Framework**: Built using Django for a robust and scalable backend.
 - 🔐 **User Authentication**: Secure user login and registration.
-- 📊 **Database Management**: Utilizes SQLite/PostgreSQL for efficient data storage.
+- 📊 **Database Management**: Utilizes SQLite/MySQL for efficient data storage.
 - 📡 **RESTful API**: Implements Django REST Framework (DRF) for API endpoints.
 - 📅 **Reservation System**: Allows customers to book tables online.
 - 🛒 **Menu Management**: Enables easy updates to the restaurant menu.
