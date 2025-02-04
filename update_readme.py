@@ -10,19 +10,10 @@ from django.conf import settings
 from Restaurant.views import UserViewSet, MenuViewSet, BookingViewSet
 from django.urls.resolvers import URLPattern, URLResolver
 
-
-from Restaurant.urls import router  # Import your router
-from collections import defaultdict
 from pathlib import Path
-
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent
-
-# # Django settings setup
-# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Littlelemon.settings")
-# django.setup()
 
 # Readme file
 README_FILE = "README.md"
