@@ -4,6 +4,13 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Littlelemon.settings")
 django.setup()
 
+from Restaurant.urls import urlpatterns as app_urls
+import importlib
+from django.conf import settings
+from Restaurant.views import UserViewSet, MenuViewSet, BookingViewSet
+from django.urls.resolvers import URLPattern, URLResolver
+
+
 from Restaurant.urls import router  # Import your router
 from collections import defaultdict
 from pathlib import Path
@@ -180,77 +187,117 @@ PROJECT_TREE = r"""
 """
 
 
-def generate_api_endpoints_from_router(router):
-    endpoints = defaultdict(lambda: defaultdict(set))
-    descriptions = defaultdict(lambda: defaultdict(str))
+def get_docstring_from_lookup_string(lookup_str, function_name = None):
+    # Split the lookup string to get the module and class names
+    components = lookup_str.split('.')
+    
+    # Import the module dynamically
+    module_name = '.'.join(components[:-1])
+    module = importlib.import_module(module_name)
+    
+    # Get the class (or function) from the module
+    obj_name = components[-1]
+    obj = getattr(module, obj_name)
+    if function_name is not None:
+        obj = getattr(obj, function_name)
+    
+    # Retrieve the docstring
+    docstring = obj.__doc__
+    
+    return docstring
+
+def get_formats_from_view(view):
+    renderers = []
+
+    if isinstance(view, (UserViewSet, MenuViewSet, BookingViewSet)):
+        view_class = view.cls if hasattr(view, 'cls') else view.__class__
+        renderers = view_class.renderer_classes
+    elif hasattr(view, 'cls') and hasattr(view.cls, 'renderer_classes'):
+        renderers = view.cls.renderer_classes
+    elif hasattr(view, 'renderer_classes'):
+        renderers = view.renderer_classes
+    elif hasattr(view, '__func__'):
+        func = view.__func__
+        if hasattr(func, 'renderer_classes'):
+            renderers = func.renderer_classes
+    else:
+        # Use the default renderer classes if no specific renderers are found
+        renderers = settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']
+    
+    formats = [renderer.format for renderer in renderers]
+    return formats
+
+
+def get_endpoint_from_urlpattern(url_pattern, base_route = ''):
+    if isinstance(url_pattern, URLPattern):
+        endpoints = []
+        pattern_name = url_pattern.name
+        api_endpoint = base_route + url_pattern.pattern._regex
+        http_method = 'get'
+        description = url_pattern.callback.__doc__
+        description = description.strip()
+        module_name = url_pattern.callback.__module__
+        function_name = url_pattern.callback.__name__
+        available_format = 'html'
+        
+        callback_func = url_pattern.callback
+        if hasattr(callback_func, "actions"):
+            for key, value in callback_func.actions.items():
+                http_method = key
+                function_name = value
+                module_name = url_pattern.lookup_str
+                description = get_docstring_from_lookup_string(module_name, function_name).strip()
+                available_format = get_formats_from_view(callback_func.cls if hasattr(callback_func, 'cls') else callback_func)
+                available_format = ",".join(available_format)
+                # "|   Name   | API Endpoint | Http Method | Available Format | Description |\n"
+                endpoint = [pattern_name, api_endpoint, http_method, available_format, description, module_name, function_name]
+                endpoints.append(endpoint)
+        else:
+            endpoint = [pattern_name, api_endpoint, http_method, available_format, description, module_name, function_name]
+            endpoints.append(endpoint)
+    
+        return endpoints
+    else:
+        return []
+
+def get_endpoints_from_urlresolver(url_pattern):
+    if isinstance(url_pattern, URLResolver):
+        result_endpoints = []
+        base_route = url_pattern.pattern._regex
+        for pattern in url_pattern.url_patterns:
+            endpoints = get_endpoint_from_urlpattern(pattern, base_route)
+            result_endpoints.extend(endpoints)
+        return result_endpoints
+    else:
+        endpoints = get_endpoint_from_urlpattern(url_pattern)
+        return endpoints
+
+def convert_list_to_markdown(api_endpoint_list):
     markdown_content = "## 🔗 API Endpoints\n\n"
-    markdown_content += "| Endpoint | Method | Description |\n"
-    markdown_content += "| -------- | ------ | ----------- |\n"
-
-    def get_method_description(viewset, method_name):
-        method = getattr(viewset, method_name, None)
-        if method and method.__doc__:
-            return method.__doc__.strip()
-        return "Description"
-
-    for prefix, viewset, basename in router.registry:
-        methods = [method.upper() for method in viewset.http_method_names if method != 'options']
-        base_endpoint = f"/api/{prefix}"
-
-        # Extract description from viewset docstring
-        description = viewset.__doc__.strip() if viewset.__doc__ else "Description"
-
-        # Add base endpoint methods and descriptions
-        for method in methods:
-            method_name = method.lower()
-            endpoints[base_endpoint][method].add(method)
-            descriptions[base_endpoint][method] = description
-
-        # Add detailed endpoints with IDs and formats
-        for method in methods:
-            if method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
-                method_name = method.lower()
-                detail_endpoint = f"/api/{prefix}/<id>"
-                format_endpoint = f"/api/{prefix}/<id>.<format>"
-                list_format_endpoint = f"/api/{prefix}/.<format>"
-
-                detail_description = get_method_description(viewset, method_name)
-                endpoints[detail_endpoint][method].add(method)
-                descriptions[detail_endpoint][method] = detail_description
-
-                endpoints[format_endpoint][method].add(method)
-                descriptions[format_endpoint][method] = detail_description
-
-                endpoints[list_format_endpoint][method].add(method)
-                descriptions[list_format_endpoint][method] = description
-
-    for endpoint, methods_dict in endpoints.items():
-        for method, methods in methods_dict.items():
-            description = descriptions[endpoint][method]
-            allowed_methods = ", ".join(sorted(methods))
-            markdown_content += f"| `{endpoint}` | {allowed_methods} | {description} |\n"
-
-    return markdown_content
-
-# Example usage
-markdown_content = generate_api_endpoints_from_router(router)
-print(markdown_content)
-
-
-
-
-def generate_api_enpoints(router):
-    markdown_content =""
-    markdown_content += generate_api_endpoints_from_router(router)
+    markdown_content += "|   Name   | API Endpoint | Http Method | Available Format | Description |\n"
+    markdown_content += "| -------- | ------------ | ----------- | ---------------- | ----------- |\n"
+    previous = ''
+    for endpoint in api_endpoint_list:
+        if previous == endpoint[0]:
+            endpoint[0] = ''
+        else:
+            previous = endpoint[0]
+            endpoint[0] = f"**{endpoint[0]}**"
+        endpoint[1] = f"`{endpoint[1]}`"
+        markdown_content += '|' + "|".join(endpoint[0:5]) + "|\n"
     return markdown_content
 
 
-def generate_update_markdown(file, header, footer, project_path, router):
-    api_enpoints = generate_api_enpoints(router)
+def generate_readme_markdown(file, header, footer, project_path, urls):
+    api_enpoints = []
+    for pattern in urls:
+        endpoints = get_endpoints_from_urlresolver(pattern)
+        api_enpoints.extend(endpoints)
+    api_endpoints_markdown = convert_list_to_markdown(api_enpoints)
     project_tree = project_path
     markdown = f"""
 {header}
-{api_enpoints}
+{api_endpoints_markdown}
 ## 📂 Project Structure
 {project_tree}
 {footer}
@@ -263,8 +310,8 @@ def generate_update_markdown(file, header, footer, project_path, router):
 
 
 def main():
-    generate_update_markdown(
-        README_FILE, MARKDOWN_STATIC_CONTENT, MARKDOWN_FOOTER, PROJECT_TREE, router)
+    generate_readme_markdown(
+        README_FILE, MARKDOWN_STATIC_CONTENT, MARKDOWN_FOOTER, PROJECT_TREE, app_urls)
     print(f"✅ {README_FILE} updated successfully!")
 
 

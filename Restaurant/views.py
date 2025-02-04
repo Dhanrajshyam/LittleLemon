@@ -9,6 +9,7 @@ from .models import Menu, Booking
 
 # Create your views here.
 def index(request):
+    """Homepage of the application"""
     return render(request, 'index.html', {})
 
 class UserViewSet(viewsets.ViewSet):
