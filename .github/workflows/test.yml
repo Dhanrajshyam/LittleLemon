@@ -67,6 +67,8 @@ jobs:
 
       # Commit and push the updated markdown file
       - name: Commit and Push Updated Results
+        env:
+          GH_TOKEN: ${{ secrets.workflow }}
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
@@ -75,16 +77,19 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "Update test results in markdown"
-            git push
+            git push https://${{ secrets.GN_TOKEN }}@github.com/Dhanrajshyam/LittleLemon.git HEAD:main
           fi
 
-      # Update test results markdown
+
+      # Update readme markdown
       - name: Update Readme in Markdown
         run: |
           python update_readme.py
 
       # Commit and push the updated markdown file
       - name: Commit and Push Updated Results
+        env:
+          GH_TOKEN: ${{ secrets.GN_TOKEN }}
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
@@ -93,5 +98,6 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "Update readme in markdown"
-            git push
+            git push https://${{ secrets.GN_TOKEN }}@github.com/Dhanrajshyam/LittleLemon.git HEAD:main
           fi
+
