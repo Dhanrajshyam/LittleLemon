@@ -43,6 +43,9 @@ db.sqlite3
 # VS Code settings (optional)
 .vscode/
 
+# Visual Studio
+.vs/
+
 # JetBrains IDEs (PyCharm, IntelliJ)
 .idea/
 
