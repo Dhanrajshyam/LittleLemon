@@ -1,9 +1,7 @@
-# Pull Request Template
-
 ## Description
 Please include a summary of the changes and the related issue. Also, explain the motivation and context.
 
-Fixes # (issue number)
+close #(issue number)
 
 ## Type of Change
 - [ ] Bug fix
