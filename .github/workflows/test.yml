@@ -72,12 +72,21 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+
+          # Extract branch name dynamically
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            TARGET_BRANCH="${{ github.base_ref }}"
+          else
+            TARGET_BRANCH="${GITHUB_REF#refs/heads/}"
+          fi
+
+            echo "Target branch is: $TARGET_BRANCH"
           git add TEST_RESULTS.md
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
             git commit -m "Update test results in markdown"
-            git push https://${{ secrets.GH_TOKEN }}@github.com/Dhanrajshyam/LittleLemon.git HEAD
+            git push https://${{ secrets.GH_TOKEN }}@github.com/Dhanrajshyam/LittleLemon.git HEAD:$TARGET_BRANCH
           fi
 
       - name: Update README Markdown file
@@ -90,10 +99,18 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+
+          # Extract branch name dynamically
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            TARGET_BRANCH="${{ github.base_ref }}"
+          else
+            TARGET_BRANCH="${GITHUB_REF#refs/heads/}"
+          fi
+
           git add README.md
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
             git commit -m "Update readme in markdown"
-            git push https://${{ secrets.GH_TOKEN }}@github.com/Dhanrajshyam/LittleLemon.git HEAD
+            git push https://${{ secrets.GH_TOKEN }}@github.com/Dhanrajshyam/LittleLemon.git HEAD:$TARGET_BRANCH
           fi
