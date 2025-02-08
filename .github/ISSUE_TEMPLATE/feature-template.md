@@ -1,7 +1,7 @@
 ---
-name: Feature Template
+name: Feature template
 about: Create Feature for an Epic
-title: Feature
+title: FEATURE
 labels: feature
 assignees: Dhanrajshyam
 
