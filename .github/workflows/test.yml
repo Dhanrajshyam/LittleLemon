@@ -80,7 +80,8 @@ jobs:
             TARGET_BRANCH="${GITHUB_REF#refs/heads/}"
           fi
 
-            echo "Target branch is: $TARGET_BRANCH"
+          echo "Target branch is: $TARGET_BRANCH"
+
           git add TEST_RESULTS.md
           if git diff --cached --quiet; then
             echo "No changes to commit"
