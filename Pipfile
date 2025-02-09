@@ -12,6 +12,11 @@ pytest-django = "*"
 requests = "*"
 markdown = "*"
 mysqlclient = "*"
+django-extensions = "*"
+django-debug-toolbar = "*"
+whitenoise = "*"
+gunicorn = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
