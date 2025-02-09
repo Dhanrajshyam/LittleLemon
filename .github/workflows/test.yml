@@ -57,6 +57,12 @@ jobs:
 
       - name: Run Tests
         env:
+          DJANGO_ENV: test
+          DATABASE_NAME: test_db
+          DATABASE_USER: test_user
+          USER_PASSWORD: testpassword
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_PORT: 5432
           GITHUB_ACTIONS: true
         run: python manage.py test --keepdb
 
