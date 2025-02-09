@@ -13,38 +13,38 @@ This file documents all the test cases executed in the Django project and their 
 ---
 
 ### 📝 Test Case Summary
-#### ![Test Coverage](https://img.shields.io/badge/Tests-✅_100%25_Passed-green)
+#### ![Test Coverage](https://img.shields.io/badge/Tests-✅_0%25_Passed-green)
 
 - **Total Test Cases:** 🧪 `13`
-- **Passed:** ✅ `13`
-- **Failed:** ❌ `0`
+- **Passed:** ✅ `0`
+- **Failed:** ❌ `13`
 
 
             
 #### Models
 | Test Case | Description | Status |
 | --------- | ----------- | ------ |
-| `test_booking_str` | Test string representation of Booking model | ✅PASS |
-| `test_menu_price` | Ensure price is stored correctly | ✅PASS |
-| `test_menu_str` | Test the string representation of Menu model | ✅PASS |
+| `test_booking_str` | Test string representation of Booking model | ❌FAIL |
+| `test_menu_price` | Ensure price is stored correctly | ❌FAIL |
+| `test_menu_str` | Test the string representation of Menu model | ❌FAIL |
 
 #### Serializers
 | Test Case | Description | Status |
 | --------- | ----------- | ------ |
-| `test_invalid_booking_serializer` | Test serializer with invalid guest number | ✅PASS |
-| `test_valid_booking_serializer` | Test serializer with valid data | ✅PASS |
-| `test_invalid_menu_serializer` | Test serializer with missing fields | ✅PASS |
-| `test_valid_menu_serializer` | Test serializer with valid data | ✅PASS |
+| `test_invalid_booking_serializer` | Test serializer with invalid guest number | ❌FAIL |
+| `test_valid_booking_serializer` | Test serializer with valid data | ❌FAIL |
+| `test_invalid_menu_serializer` | Test serializer with missing fields | ❌FAIL |
+| `test_valid_menu_serializer` | Test serializer with valid data | ❌FAIL |
 
 #### Views
 | Test Case | Description | Status |
 | --------- | ----------- | ------ |
-| `test_create_booking` | Test booking creation | ✅PASS |
-| `test_list_bookings` | Test booking listing | ✅PASS |
-| `test_create_menu_item` | Create a new menu item | ✅PASS |
-| `test_list_menu_items` | Ensure menu items are listed correctly | ✅PASS |
-| `test_list_users_authenticated` | Authenticated user should be able to list users | ✅PASS |
-| `test_list_users_unauthenticated` | Unauthenticated request should not be authorised | ✅PASS |
+| `test_create_booking` | Test booking creation | ❌FAIL |
+| `test_list_bookings` | Test booking listing | ❌FAIL |
+| `test_create_menu_item` | Create a new menu item | ❌FAIL |
+| `test_list_menu_items` | Ensure menu items are listed correctly | ❌FAIL |
+| `test_list_users_authenticated` | Authenticated user should be able to list users | ❌FAIL |
+| `test_list_users_unauthenticated` | Unauthenticated request should not be authorised | ❌FAIL |
 
 
 **Legend**: ✅ = Pass, ❌ = Fail
