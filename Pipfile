@@ -16,7 +16,9 @@ django-extensions = "*"
 django-debug-toolbar = "*"
 whitenoise = "*"
 gunicorn = "*"
-psycopg2 = "*"
+dj-database-url = "*"
+load-dotenv = "*"
+psycopg = {extras = ["binary"], version = "*"}
 
 [dev-packages]
 
