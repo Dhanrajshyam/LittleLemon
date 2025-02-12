@@ -95,6 +95,9 @@ if ENVIRONMENT == 'development':
             'PASSWORD': os.getenv('USER_PASSWORD'),
             'HOST': os.getenv('DATABASE_HOST'),
             'PORT': os.getenv('DATABASE_PORT'),
+            'TEST': {
+                'NAME': 'test_db',  # Separate test database
+            },
         }
     }
 

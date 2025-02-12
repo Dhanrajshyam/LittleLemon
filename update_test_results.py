@@ -1,12 +1,8 @@
 import django
 import os
 import unittest
-import markdown
-from datetime import datetime
 from io import StringIO
-from unittest.runner import TextTestResult
 from pathlib import Path
-import math
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent
