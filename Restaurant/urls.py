@@ -11,5 +11,6 @@ router.register(r"booking", BookingViewSet)
 urlpatterns = [
     path("",views.index, name="home"),
     path("api/",include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('user/register/', views.RegisterView.as_view(), name = "user_registration" ),
+    # path("verify-email/<uidb64>/<token>/", views.verify_email, name="verify_email"),
 ]

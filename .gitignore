@@ -57,3 +57,6 @@ TestResults/
 
 # Compiled C extensions
 *.so
+
+# sample python files
+sample.py
