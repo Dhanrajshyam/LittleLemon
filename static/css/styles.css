@@ -1,0 +1,41 @@
+.dance_style {
+  font-family: 'Dancing Script';
+  font-size: larger;
+}
+
+.nav-item .nav-link.active {
+  color: var(--bs-primary);
+}
+
+.nav-item .nav-link:hover {
+  color: var(--bs-secondary);
+}
+
+.btn-primary {
+  color: var(--bs-light);
+  font-weight: bolder;
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+.btn-primary:hover {
+  font-weight: bold;
+  background-color: var(--bs-secondary);
+  border-color: var(--bs-secondary);
+  box-shadow: var(--bs-primary);
+}
+
+.site-header {
+  position: sticky;
+  z-index: 999;
+  top: -10px;
+  background-color: inherit;
+  box-shadow: 0 -6px 10px 5px rgba(0,0,0,0.5);
+}
+
+.site-footer {
+  z-index: 999;
+  position: sticky;
+  box-shadow: 0px 6px 10px 5px rgba(0,0,0,0.5);
+}
+
