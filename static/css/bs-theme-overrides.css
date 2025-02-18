@@ -348,6 +348,7 @@
   --bs-tertiary-color: rgba(250,250,250,0.5);
   --bs-tertiary-color-rgb: 250,250,250,0.5;
   --bs-body-font-family: Rubik, Kanit, 'Dancing script',;
+  --bs-body-font-size: 1rem;
   --bs-link-color: #5CC144;
   --bs-link-color-rgb: 92,193,68;
   --bs-link-hover-color: #eacf5f;
