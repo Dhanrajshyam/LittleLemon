@@ -1,3 +1,4 @@
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from rest_framework import permissions, viewsets, status
 from .serializers import UserSerializer, MenuSerializer, BookingSerializer
@@ -5,12 +6,65 @@ from django.contrib.auth.models import User
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
-from .models import Menu, Booking
+from .models import Menu, Booking, CustomUser
+from .forms import CustomUserSignUpForm, LoginForm
+from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
+from .utils import generate_email_verification_token, verify_email_token, send_mailgun_email, send_verification_email
+from django.contrib.auth import login
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+
+
 
 # Create your views here.
 def index(request):
     """Homepage of the application"""
     return render(request, 'index.html', {})
+
+
+def terms_n_conditions(request):
+    """Terms and conditions page"""
+    return render(request, 'terms_n_conditions.html', {})
+
+
+# def verify_email(request, uidb64, token):
+#     if verify_email_token(uidb64, token):
+#         return HttpResponse("email verified successfully! you can now log in.")
+#     return HttpResponse("invalid verification link or expired.")
+
+
+class UserSignUpView(CreateView):
+    model = CustomUser
+    form_class = CustomUserSignUpForm
+    template_name = "user_sign_up.html"
+    success_url = reverse_lazy("home")  # Redirect after successful registration
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data["password"])
+        user.is_active = True  # Late make it false to set users Inactive until email verification
+        user.save()
+        # send_verification_email(user)
+        return super().form_valid(form)
+
+    def post(self, request):
+        user_form = CustomUserSignUpForm(request.POST)
+        if user_form.is_valid():
+            return redirect("home")
+        return render(request, "user_sign_up.html", {"user_form": user_form})
+
+
+
+# def user_login(request):
+#     form = LoginForm()
+#     if request.method == "POST":
+#         form = LoginForm(request.POST)
+#         if form.is_valid():
+#             login(request, form.get_user())
+#             return redirect("home")  # Redirect after login
+
+#     return render(request, "login.html", {"form": form})
 
 class UserViewSet(viewsets.ViewSet):
     """
