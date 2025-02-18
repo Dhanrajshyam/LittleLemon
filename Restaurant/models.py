@@ -1,5 +1,8 @@
+from typing import Required
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.validators import RegexValidator
+
 
 # Create your models here.
 class Booking(models.Model):
@@ -43,6 +46,11 @@ class CustomUser(AbstractUser):
     
     username = None  # Remove username field
     email = models.EmailField(unique=True)  # Make email unique
+    phone_number = models.CharField(
+        max_length=10,
+        null=True, blank=True,
+        validators=[RegexValidator(r"^\d{10}$", message="Phone number must be exactly 10 digits.")]
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []  # No other fields required

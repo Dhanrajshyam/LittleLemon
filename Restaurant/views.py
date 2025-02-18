@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from .models import Menu, Booking, CustomUser
-from .forms import UserForm, LoginForm
+from .forms import CustomUserSignUpForm, LoginForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 from .utils import generate_email_verification_token, verify_email_token, send_mailgun_email, send_verification_email
@@ -23,26 +23,37 @@ def index(request):
     return render(request, 'index.html', {})
 
 
+def terms_n_conditions(request):
+    """Terms and conditions page"""
+    return render(request, 'terms_n_conditions.html', {})
+
+
 # def verify_email(request, uidb64, token):
 #     if verify_email_token(uidb64, token):
 #         return HttpResponse("email verified successfully! you can now log in.")
 #     return HttpResponse("invalid verification link or expired.")
 
 
-class RegisterView(CreateView):
+class UserSignUpView(CreateView):
     model = CustomUser
-    form_class = UserForm
-    template_name = "user_registration.html"
+    form_class = CustomUserSignUpForm
+    template_name = "user_sign_up.html"
     success_url = reverse_lazy("home")  # Redirect after successful registration
 
     def form_valid(self, form):
         user = form.save(commit=False)
         user.set_password(form.cleaned_data["password"])
-        user.is_active = False  # Inactive until email verification
+        user.is_active = True  # Late make it false to set users Inactive until email verification
         user.save()
         # send_verification_email(user)
-        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')  # Log the user in after registration
         return super().form_valid(form)
+
+    def post(self, request):
+        user_form = CustomUserSignUpForm(request.POST)
+        if user_form.is_valid():
+            return redirect("home")
+        return render(request, "user_sign_up.html", {"user_form": user_form})
+
 
 
 # def user_login(request):

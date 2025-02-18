@@ -24,6 +24,8 @@
     <link rel="preload" as="style" href="{% static 'css/bs-theme-overrides.css' %}" onload="this.rel = 'stylesheet'" />
     <link rel="preload" as="style" href="{% static 'css/Login-Form-Basic-icons.css' %}" onload="this.rel = 'stylesheet'" />
     <link rel="preload" as="style" href="{% static 'css/styles.css' %}" onload="this.rel = 'stylesheet'" />
+    <link rel="preload" as="style" href="{% static 'css/animate.min.css' %}" onload="this.rel = 'stylesheet'" />
+    <link rel="preload" as="style" href="{% static 'css/mobile_navbar.css' %}" onload="this.rel = 'stylesheet'" />
 
     <!--Fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,13 +41,18 @@
     {% include 'partials/_header.html' %}
 
     <main>
-    {% block content %} {% endblock %}
+        {% block content %} {% endblock %}
     </main>
 
     <!--Footer content-->
     {% include 'partials/_footer.html' %}
 
     <!-- Afterload Javascript  -->
-    <script src= {% static 'bootstrap/js/bootstrap.min.js'%}></script>
+    <script src="{% static 'js/theme-toggle.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bs-init.js' %}"></script>
+    <script src="{% static 'js/littlelemon_main.js' %}"></script>
+
+
 </body>
 </html>
