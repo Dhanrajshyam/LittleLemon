@@ -1,17 +1,8 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    const htmlElement = document.querySelector('html');
+var themeToggle = document.getElementById('themeToggle');
+var themeIcon = document.getElementById('themeIcon');
+var htmlElement = document.querySelector('html');
 
-    // Set initial theme
-    setTheme(getPreferredTheme());
-
-    // Add event listener to toggle button
-    themeToggle.addEventListener('click', themeupdate);
-
-
-
-    function updateThemeIcon(theme) {
+function updateThemeIcon(theme) {
         if (!themeIcon) return;
         if (theme === 'dark') {
             themeIcon.innerHTML = `
@@ -29,23 +20,28 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    function setTheme(theme) {
+function setTheme(theme) {
         if (!theme) {
-            let currentTheme = htmlElement.getAttribute('data-bs-theme');
+            var currentTheme = htmlElement.getAttribute('data-bs-theme');
             theme = currentTheme === 'dark' ? 'light' : 'dark';
         }
         htmlElement.setAttribute('data-bs-theme', theme);
         updateThemeIcon(theme);
     }
 
-    function getPreferredTheme() {
+function getPreferredTheme() {
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
-    function themeupdate() {
-        let currentTheme = htmlElement.getAttribute('data-bs-theme');
+function themeupdate() {
+        var currentTheme = htmlElement.getAttribute('data-bs-theme');
         theme = currentTheme === 'dark' ? 'light' : 'dark';
         setTheme(theme);
     }
+document.addEventListener("DOMContentLoaded", function () {
+    // Set initial theme
+    setTheme(getPreferredTheme());
 
+    // Add event listener to toggle button
+    document.getElementById('themeToggle').addEventListener('click', themeupdate);
 });
