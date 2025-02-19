@@ -11,14 +11,6 @@
             </div>
         </div>
 
-        {% if user_form.non_field_errors %}
-        <div class="error-messages">
-            {% for error in user_form.non_field_errors %}
-            <p style="color: red;">{{ error }}</p>
-            {% endfor %}
-        </div>
-        {% endif %}
-
         <div class="row d-flex justify-content-center">
             <div class="col-md-6 col-xl-4">
                 <div class="card mb-5">
@@ -49,7 +41,7 @@
                                     <p id="password-match" class="invalid">✔ Confirm Password must match Password</p>
                                 </div>
                             </div>
-                            <div class="mb-3"><button class="btn btn-primary d-block w-100" type="submit">Continue</button></div>
+                            <div class="mb-3"><button class="btn d-block w-100 button-primary" type="submit">Continue</button></div>
                             <div>
                                 <p class="text-muted">By creating an account, I accept the&nbsp;<a href="{% url 'terms_n_conditions' %}">Terms and Conditions.</a></p>
                                 <p class="text-muted">Already have an account,&nbsp;<a href="#">Login here!</a></p>
