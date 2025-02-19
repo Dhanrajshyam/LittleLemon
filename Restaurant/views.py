@@ -38,7 +38,6 @@ class UserSignUpView(CreateView):
     model = CustomUser
     form_class = CustomUserSignUpForm
     template_name = "user_sign_up.html"
-    success_url = reverse_lazy("home")  # Redirect after successful registration
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -51,7 +50,7 @@ class UserSignUpView(CreateView):
     def post(self, request):
         user_form = CustomUserSignUpForm(request.POST)
         if user_form.is_valid():
-            return redirect("home")
+            return render(request, "sign_up_success.html")
         return render(request, "user_sign_up.html", {"user_form": user_form})
 
 
