@@ -103,14 +103,34 @@
   z-index: 2;
 }
 
-.bg-trans {
-  backdrop-filter: blur(15px) saturate(130%);
-  -webkit-backdrop-filter: blur(15px) saturate(130%);
-  background-color: var(--bs-dark);
+.bg-transparent {
+  backdrop-filter: blur(4px) saturate(130%) opacity(100%) invert(10%);
+  -webkit-backdrop-filter: blur(4px) saturate(130%) opacity(100%) invert(10%);
   opacity: 100%;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.125);
-  box-shadow: 1px 1px 5px 3px rgba(0,0,0,0.75);
+  box-shadow: 1px 1px 5px 3px rgba(0,0,0,0.63);
   color: var(--bs-light);
+}
+
+.font-size-1_3em {
+  font-size: 1.3em;
+  color: var(--bs-light);
+}
+
+div[class^='col'] > div > button {
+  opacity: 100%;
+}
+
+.inherit-height {
+  height: 100%;
+}
+
+.column-card {
+  height: 100%;
+}
+
+.column {
+  padding: 10px;
 }
 
