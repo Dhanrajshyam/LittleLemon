@@ -166,9 +166,12 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_AGE = 3600  # 60 minutes (3600 seconds)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-AXES_FAILURE_LIMIT = 5  # Block after 5 failed attempts
+# Rate Limiting Settings (Prevent Brute Force Attacks) 
+AXES_FAILURE_LIMIT = 5  # Block user after 5 failed login attempts
 AXES_COOLOFF_TIME = 1  # Lockout time in hours (set 1 for 1 hour)
 
+
+# Secure Password Settings
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher',  # Most secure option
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',  # Fallback option

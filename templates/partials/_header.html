@@ -21,10 +21,10 @@
                         </a>
                     </li>
                     {% if request.user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="#">Logout</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
                     {% else %}
                         <li class="nav-item"><a class="btn swing animated ms-md-2 button-primary" role="button" href="{% url 'user_sign_up' %}">Sign up</a></li>
-                        <li class="nav-item"><a class="btn ms-md-2 button-primary" role="button" href="#">Login</a></li>
+                        <li class="nav-item"><a class="btn ms-md-2 button-primary" role="button" href="{% url 'login' %}">Login</a></li>
                     {% endif %}
                 </ul>
             </div>

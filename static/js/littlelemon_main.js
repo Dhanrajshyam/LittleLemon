@@ -21,4 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
             navbarCollapse.classList.remove("show");
         });
     });
+    
+    
 });
