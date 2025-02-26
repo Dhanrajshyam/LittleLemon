@@ -24,7 +24,7 @@
   font-size: large;
 }
 
-.button-primary:hover {
+.button-primary:hover, .button-primary:focus {
   font-weight: bold;
   background-color: var(--bs-secondary);
   border-color: var(--bs-secondary);
@@ -113,6 +113,18 @@
   color: var(--bs-light);
 }
 
+.bg-box-theme {
+  opacity: 100%;
+  border-radius: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  box-shadow: 1px 1px 5px 3px rgba(0,0,0,0.63);
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
+  margin: 20px;
+  padding: 31px;
+  height: fit-content;
+}
+
 .font-size-1_3em {
   font-size: 1.3em;
   color: var(--bs-light);
@@ -132,5 +144,10 @@ div[class^='col'] > div > button {
 
 .column {
   padding: 10px;
+}
+
+.fit-center {
+  width: fit-content;
+  justify-self: center;
 }
 
