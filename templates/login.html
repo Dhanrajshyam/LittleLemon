@@ -20,20 +20,23 @@
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label class="form-label" for="email">Email address</label>
-                                <input class="form-control form-control" type="email" id="email" placeholder="Enter your email" autocomplete="" title="Please enter registered email id" required autofocus">
+                                <input name="email" class="form-control" type="email" id="email" placeholder="Enter your email" autocomplete="" title="Please enter registered email id" required autofocus>
                                 {% for error in form.email.errors %}
                                 <div class="invalid-feedback">{{ error }}</div>
                                 {% endfor %}
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="password">Password</label>
-                                <input class="form-control form-control" type="password" id="password" placeholder="Enter your password" autocomplete="" title="Please enter valid password" required>
+                                <input name="password" class="form-control" type="password" id="password" placeholder="Enter your password" autocomplete="" title="Please enter valid password" required>
                                 {% for error in form.password.errors %}
                                 <div class="invalid-feedback">{{ error }}</div>
                                 {% endfor %}
                             </div>
-                            <div class="text-center mb-3"><button class="btn button-primary" type="submit">Login</button></div>
+                            <div class="text-center mb-3">
+                                <button class="btn button-primary" type="submit">Login</button>
+                            </div>
                         </form>
+                        
                     </div>
                 </div>
             </div>
@@ -56,8 +59,8 @@
                         <div>
                             <h1 class="text-center mb-4">Login</h1>
                             <form>
-                                <div class="mb-3"><label class="form-label" for="email">Email address</label><input class="form-control form-control" type="email" id="email" placeholder="Enter your email" autocomplete="" title="Please enter registered email id" required="" pattern="/^[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/"></div>
-                                <div class="mb-3"><label class="form-label" for="password">Password</label><input class="form-control form-control" type="password" id="password" placeholder="Enter your password" pattern="/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*]).{8,16}$/" autocomplete="" title="Please enter valid password" required=""></div>
+                                <div class="mb-3"><label class="form-label" for="email">Email address</label><input class="form-control" type="email" id="email" name="email" placeholder="Enter your email" autocomplete title="Please enter registered email id" required pattern="/^[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/"></div>
+                                <div class="mb-3"><label class="form-label" for="password">Password</label><input class="form-control" type="password" id="password" name="password" placeholder="Enter your password" pattern="/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*]).{8,16}$/" autocomplete title="Please enter valid password" required></div>
                                 <div class="text-center mb-3"><button class="btn button-primary" type="submit">Login</button></div>
                             </form>
                         </div>

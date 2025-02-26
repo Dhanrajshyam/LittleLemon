@@ -38,7 +38,11 @@ def user_login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         # Check if the form is valid
-        if form.is_valid():
+        validform = form.is_valid()
+        print(validform)
+        print(form.errors)
+        
+        if validform:
             email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
 
@@ -47,6 +51,8 @@ def user_login(request):
             if user is not None:
                 login(request, form.get_user())
                 return redirect("home")
+            else:
+                form.add_error('password', "Invalid email or password")
     else:
         form = LoginForm()
     return render(request, "login.html", {"form": form})
