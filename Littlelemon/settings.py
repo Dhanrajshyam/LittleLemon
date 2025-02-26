@@ -37,6 +37,7 @@ ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split("
 ALLOWED_HOSTS.append('testserver')
 
 AUTH_USER_MODEL = "Restaurant.CustomUser"
+LOGIN_URL = "login"  # Redirect to login page
 LOGIN_REDIRECT_URL = "home"  # Redirect after login
 LOGOUT_REDIRECT_URL = "home"  # Redirect after logout
 
