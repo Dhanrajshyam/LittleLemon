@@ -8,9 +8,12 @@
         <div class="row">
             <div class="col-lg-6 col-xl-8 d-none d-lg-block position-relative">
                 <div class="text-center ms-4 mt-4 position-relative z-1">
-                    <h2 class="fw-bold mb-3">Welcome to&nbsp;<strong class="text-primary">Little&nbsp;</strong><strong class="text-secondary">Lemon!</strong></h2>
+                    <h2 class="fw-bold mb-3">Welcome to&nbsp;<strong class="text-primary">Little&nbsp;</strong><strong
+                            class="text-secondary">Lemon!</strong></h2>
                 </div>
-                <div style="padding-top: 25px;"><dotlottie-wc src="https://lottie.host/fb0ba1c2-ca4a-4f14-a334-6e2a2d6a9ffc/dErFj3mB7f.lottie" speed="1" style="width: auto; height: auto" mode="bounce" loop autoplay></dotlottie-wc></div>
+                <div style="padding-top: 25px;"><dotlottie-wc
+                        src="https://lottie.host/fb0ba1c2-ca4a-4f14-a334-6e2a2d6a9ffc/dErFj3mB7f.lottie" speed="1"
+                        style="width: auto; height: auto" mode="bounce" loop autoplay></dotlottie-wc></div>
             </div>
             <div class="col-lg-6 col-xl-4 d-flex justify-content-center align-items-center">
                 <div class="col-lg-12 col-xl-12 bg-box-theme">
@@ -20,23 +23,27 @@
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label class="form-label" for="email">Email address</label>
-                                <input name="email" class="form-control" type="email" id="email" placeholder="Enter your email" autocomplete="" title="Please enter registered email id" required autofocus>
+                                <input name="email" class="form-control" type="email" id="email"
+                                    placeholder="Enter your email" autocomplete=""
+                                    title="Please enter registered email id" required autofocus>
                                 {% for error in form.email.errors %}
                                 <div class="invalid-feedback">{{ error }}</div>
                                 {% endfor %}
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="password">Password</label>
-                                <input name="password" class="form-control" type="password" id="password" placeholder="Enter your password" autocomplete="" title="Please enter valid password" required>
+                                <input name="password" class="form-control" type="password" id="password"
+                                    placeholder="Enter your password" autocomplete=""
+                                    title="Please enter valid password" required>
                                 {% for error in form.password.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
+                                <div class="alert alert-danger alert-dismissible fade show">{{ error }}</div>
                                 {% endfor %}
                             </div>
                             <div class="text-center mb-3">
                                 <button class="btn button-primary" type="submit">Login</button>
                             </div>
                         </form>
-                        
+
                     </div>
                 </div>
             </div>
@@ -44,38 +51,3 @@
     </div>
 </section>
 {% endblock %}
-<body>
-    <main>
-        <div class="container-fluid vh-100">
-            <div class="row h-100">
-                <div class="col-lg-6 col-xl-8 d-none d-lg-block position-relative">
-                    <div class="text-center ms-4 mt-4 position-relative z-1">
-                        <h2 class="fw-bold mb-3">Welcome to&nbsp;<strong class="text-primary">Little&nbsp;</strong><strong class="text-secondary">Lemon!</strong></h2>
-                    </div>
-                    <div style="padding-top: 25px;"><dotlottie-wc src="https://lottie.host/fb0ba1c2-ca4a-4f14-a334-6e2a2d6a9ffc/dErFj3mB7f.lottie" speed="1" style="width: auto; height: auto" mode="bounce" loop autoplay></dotlottie-wc></div>
-                </div>
-                <div class="col-lg-6 col-xl-4 d-flex justify-content-center align-items-center">
-                    <div class="col-lg-12 col-xl-12 bg-box-theme">
-                        <div>
-                            <h1 class="text-center mb-4">Login</h1>
-                            <form>
-                                <div class="mb-3"><label class="form-label" for="email">Email address</label><input class="form-control" type="email" id="email" name="email" placeholder="Enter your email" autocomplete title="Please enter registered email id" required pattern="/^[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/"></div>
-                                <div class="mb-3"><label class="form-label" for="password">Password</label><input class="form-control" type="password" id="password" name="password" placeholder="Enter your password" pattern="/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*]).{8,16}$/" autocomplete title="Please enter valid password" required></div>
-                                <div class="text-center mb-3"><button class="btn button-primary" type="submit">Login</button></div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/bs-init.js"></script>
-    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
-    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@latest/dist/dotlottie-wc.js" type="module"></script>
-    <script src="assets/js/littlelemon_main.js"></script>
-    <script src="assets/js/sign_up.js"></script>
-    <script src="assets/js/theme-toggle.js"></script>
-</body>
-
-</html>

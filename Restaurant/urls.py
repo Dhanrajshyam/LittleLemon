@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, MenuViewSet, BookingViewSet, index, user_login, user_logout, UserSignUpView, terms_n_conditions
 
 router = DefaultRouter(trailing_slash=False)
-router.register(r"users", UserViewSet, basename='user')
+router.register(r"users", UserViewSet, basename="customuser")
 router.register(r"menu", MenuViewSet)
 router.register(r"booking", BookingViewSet)
 

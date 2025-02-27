@@ -36,6 +36,7 @@ DEBUG = True
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 ALLOWED_HOSTS.append('testserver')
 
+# Custom User Model
 AUTH_USER_MODEL = "Restaurant.CustomUser"
 LOGIN_URL = "login"  # Redirect to login page
 LOGIN_REDIRECT_URL = "home"  # Redirect after login
@@ -164,11 +165,12 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 
+# On login, user session will expire after 60 minutes of inactivity and the session will be deleted when the user closes the browser.
 SESSION_COOKIE_AGE = 3600  # 60 minutes (3600 seconds)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Rate Limiting Settings (Prevent Brute Force Attacks) 
-AXES_FAILURE_LIMIT = 5  # Block user after 5 failed login attempts
+AXES_FAILURE_LIMIT = 1000  # Block user after 1000 failed login attempts
 AXES_COOLOFF_TIME = 1  # Lockout time in hours (set 1 for 1 hour)
 
 
@@ -237,5 +239,5 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "littlelemondemo@gmail.com"
-EMAIL_HOST_PASSWORD = "y5CHGj4XUTHuk5"
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')

@@ -16,6 +16,7 @@ TEST_CATEGORIES = {
     "Models": "Restaurant.tests.test_models",
     "Serializers": "Restaurant.tests.test_serializers",
     "Views": "Restaurant.tests.test_views",
+    "Forms": "Restaurant.tests.test_forms",
 }
 
 # Test results file
