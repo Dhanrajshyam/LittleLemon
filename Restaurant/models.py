@@ -1,9 +1,11 @@
 from typing import Required
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission
 from django.core.validators import RegexValidator
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import Permission
+from django.contrib import auth
+from .managers import CustomUserManager
+# from django.contrib.auth.hashers import make_password
 
 
 # Create your models here.
@@ -22,47 +24,6 @@ class Menu(models.Model):
     
     def __str__(self):
         return f'{self.title} | stock {self.inventory}'    
-
-
-class CustomUserManager(BaseUserManager):
-    """Custom manager for our CustomUser model where email is the username"""
-    
-    def _create_user(self, email, password=None, **extra_fields):
-        """Create and return a user"""
-        if not email:
-            raise ValueError("The Email field must be set")
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)  # Hash password
-        user.save(using=self._db)
-        
-        # Assign permissions only for regular users
-        if not user.is_superuser:
-            user.user_permissions.clear()  # Remove all permissions first
-            
-            # Get specific permissions to assign
-            allowed_permissions = [
-                "add_order", "change_order", "view_order",  # Example: Order model permissions
-                "view_menuitem",  # Example: View-only permission for MenuItem
-            ]
-            content_types = ContentType.objects.all()  # Get all content types
-            for ct in content_types:
-                for perm in Permission.objects.filter(content_type=ct, codename__in=allowed_permissions):
-                    user.user_permissions.add(perm)
-
-        return user
-    
-    def create_user(self, email, password=None, **extra_fields):
-        """Create and return a regular user"""
-        extra_fields.setdefault("is_staff", False)
-        extra_fields.setdefault("is_superuser", False)
-        return self._create_user(email, password, **extra_fields)
-
-    def create_superuser(self, email, password=None, **extra_fields):
-        """Create and return a superuser"""
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
-        return self._create_user(email, password, **extra_fields)
 
 class CustomUser(AbstractUser):
     """Custom User model that uses email as the primary identifier"""
