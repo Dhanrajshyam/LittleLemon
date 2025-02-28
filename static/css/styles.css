@@ -15,14 +15,16 @@
   color: var(--bs-secondary);
 }
 
-.btn-primary {
+.button-primary {
   color: var(--bs-light);
+  opacity: 100%;
   font-weight: bolder;
   background-color: var(--bs-primary);
   border-color: var(--bs-primary);
+  font-size: large;
 }
 
-.btn-primary:hover {
+.button-primary:hover, .button-primary:focus {
   font-weight: bold;
   background-color: var(--bs-secondary);
   border-color: var(--bs-secondary);
@@ -40,7 +42,7 @@
 .site-footer {
   z-index: 999;
   position: sticky;
-  box-shadow: 0px 6px 10px 5px rgba(0,0,0,0.5);
+  box-shadow: 0px -5px 10px -5px rgba(0,0,0,0.5);
 }
 
 /* Floating password validation box */
@@ -56,7 +58,7 @@
   top: 10px;
   left: 0;
   display: none;
-  z-index: 1000;
+  z-index: 10;
   text-align: left;
 }
 
@@ -71,7 +73,7 @@
   top: 10px;
   left: 0;
   display: none;
-  z-index: 1000;
+  z-index: 11;
   text-align: left;
 }
 
@@ -89,5 +91,63 @@
 
 .btn {
   margin: 5px;
+}
+
+.background {
+  position: fixed;
+  z-index: 1;
+}
+
+.foreground {
+  position: fixed;
+  z-index: 2;
+}
+
+.bg-transparent {
+  backdrop-filter: blur(4px) saturate(130%) opacity(100%) invert(10%);
+  -webkit-backdrop-filter: blur(4px) saturate(130%) opacity(100%) invert(10%);
+  opacity: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  box-shadow: 1px 1px 5px 3px rgba(0,0,0,0.63);
+  color: var(--bs-light);
+}
+
+.bg-box-theme {
+  opacity: 100%;
+  border-radius: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  box-shadow: 1px 1px 5px 3px rgba(0,0,0,0.63);
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
+  margin: 20px;
+  padding: 31px;
+  height: fit-content;
+}
+
+.font-size-1_3em {
+  font-size: 1.3em;
+  color: var(--bs-light);
+}
+
+div[class^='col'] > div > button {
+  opacity: 100%;
+}
+
+.inherit-height {
+  height: 100%;
+}
+
+.column-card {
+  height: 100%;
+}
+
+.column {
+  padding: 10px;
+}
+
+.fit-center {
+  width: fit-content;
+  justify-self: center;
 }
 

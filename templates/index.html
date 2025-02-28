@@ -1,48 +1,73 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
+
 {% block content %}
+
+<section class="py-4 py-xl-5">
+    <div class="container">
+        <div class="border rounded border-0 d-flex flex-column justify-content-center align-items-center p-4 py-5 bg-home-banner" style="height: 30vh; background-image: linear-gradient(rgba(0,123,255,0.2), rgba(0,123,255,0.2)), url({% static 'img/photos/restaurant_food.jpg' %}); background-position: center; background-size: cover; background-repeat: no-repeat;">
+            <div class="row">
+                <div class="col-md-10 col-xl-12 text-center d-flex d-sm-flex d-md-flex justify-content-center align-items-center mx-auto justify-content-md-start align-items-md-center justify-content-xl-center">
+                    <div class="bg-transparent">
+                        <h1 class="text-uppercase fw-bold mb-3">Special Offer</h1>
+                        <p class="mb-3 font-size-1_3em">30% This Weekend</p><button class="btn me-2 py-2 px-4 button-primary" type="button">Book Now!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <section>
-    <article id="hero">
-      <h1 class="heading_shadow">SPECIAL OFFER</h1>
-      <p>
-        30% Off This Weekend 
-      </p>
-      <a href="#" class="cta"> Book now </a>
-    </article>
-  </section>
-  <section>
-    <article>
-      <h2>Our New Menu</h2>
-      <img src="{% static 'img/menu/Grill.jpg' %}">
-      <p>
-        Our menu consists of 12-15 seasonal items based on Italian, Greek, and Turkish culture.
-      </p>
-      <p>
-        <a href="#">See our new menu</a>
-      </p>
-    </article>
-    <article>
-      <h2>Book a table</h2>
-      <img src="{% static 'img/menu/salad.jpg' %}">
-      <p>
-        Reserve your table for an Italian, Greek, and Turkish dining experience.
-      </p>
-      <p>
-        <a href="#">Book your table now</a>
-      </p>
-    </article>
-    <article>
-      <h2>Opening Hours</h2>
-      <img src="{% static 'img/chefs/head_chef.jpg' %}">
-      <p>
-        The Little Lemon Restaurant is open 7 days a week, except for public holidays. 
-      </p>
-      <ul>
-        <li>Mon - Fri: 2pm - 10pm</li>
-        <li>Sat: 2pm - 11pm</li>
-        <li>Sun: 2pm - 9pm</li>
-      </ul>
-    </article>
-  </section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 column">
+                <div class="card column-card">
+                    <img class="card-img-top w-100 d-block" src="{% static 'img/menu/Grill.jpg' %}" alt="Menu Image">
+                    <div class="card-body">
+                        <h4 class="card-title">Our New Menu</h4>
+                        <p class="card-text">Our menu consists of 12-15 seasonal items based on Italian, Greek, and Turkish culture.</p><button class="btn button-primary" type="button">See Our Menu!</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 column">
+                <div class="card column-card">
+                    <img class="card-img-top w-100 d-block" src="{% static 'img/photos/restaurant_inside.jpg' %}" alt="Table Image of Restaurant">
+                    <div class="card-body">
+                        <h4 class="card-title">Book a Table</h4>
+                        <p class="card-text">Reserve your table for an Italian, Greek, and Turkish dining experience.</p><button class="btn button-primary" type="button">Book a Table Now!</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 column">
+                <div class="card column-card">
+                    <img class="card-img-top w-100 d-block" src="{% static 'img/chefs/head_chef.jpg' %}">
+                    <div class="card-body">
+                        <h4 class="card-title">Opening Hours</h4>
+                        <p class="card-text">The Little Lemon Restaurant is open 7 days a week, except for public holidays.</p>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Monday-Friday</th>
+                                        <th>Saturday</th>
+                                        <th>Sunday</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>2pm - 10pm</td>
+                                        <td>2pm - 11pm</td>
+                                        <td>2pm - 9pm</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
