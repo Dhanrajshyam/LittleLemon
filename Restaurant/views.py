@@ -1,6 +1,6 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
-from rest_framework import permissions, viewsets, status
+from rest_framework import viewsets, status
 from .serializers import UserSerializer, MenuSerializer, BookingSerializer
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -13,6 +13,8 @@ from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib.auth import get_user_model
+from .permissions import IsBranchManagerOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
@@ -83,8 +85,19 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        """
+        Restrict data based on user groups
+        - Users with Branch_Manager group can perform all CRUD operations on all users.
+        - Normal users can view their own profile/account details and perform update/delete(account deletion) on it. 
+        """
+        user = self.request.user
+        if user.groups.filter(name='Branch_Manager').exists():
+            return get_user_model().objects.all()  # Branch Managers get all users
+        return get_user_model().objects.filter(id=user.id)  # Normal users get only their own data
+    
     def create(self, request, *args, **kwargs):
         """Create a new user"""
         serializer = self.get_serializer(data=request.data)
@@ -92,6 +105,14 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response({'message': 'User created Successfully!'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def list(self, request, *args, **kwargs):
+        """Retrieve a list of users"""
+        return super().list(request, *args, **kwargs)
+    
+    def retrieve(self, request, *args, **kwargs):
+        """Retrieve a user"""
+        return super().retrieve(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         """Update a user"""
@@ -112,6 +133,7 @@ class MenuViewSet(viewsets.ModelViewSet):
     """
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
+    permission_classes = [IsBranchManagerOrReadOnly]
 
     def list(self, request, *args, **kwargs):
         """Retrieve a list of menu items"""
@@ -144,7 +166,19 @@ class BookingViewSet(viewsets.ModelViewSet):
     """
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        """
+        Restrict data based on user groups.
+        - Users with Branch_Manager group can perform all CRUD operations on all booking by all users.
+        - Normal users(Authenticated) can view the list of bookings booked by them and its booking details.
+        - Anonymous (Unauthenticated) Users can't access the booking API endpoints.
+        """
+        user = self.request.user
+        if user.groups.filter(name='Branch_Manager').exists():
+            return Booking.objects.all()  # Branch Managers get all user's bookings
+        return Booking.objects.filter(user=user) # Normal users see only their own bookings
 
     def list(self, request, *args, **kwargs):
         """Retrieve a list of bookings"""
