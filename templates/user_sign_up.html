@@ -1,0 +1,79 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="position-relative py-4 py-xl-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md-8 col-xl-6 text-center mx-auto">
+                <h2 class="display-2">Sign up!</h2>
+                <p class="w-lg-50 dance_style">Sign up for an account to checkout&nbsp;<strong class="text-secondary">Our Menu</strong>&nbsp;and get yourself a&nbsp;<strong class="text-secondary">Yummy Treat!</strong></p>
+            </div>
+        </div>
+
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-6 col-xl-4">
+                <div class="card mb-5">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <div class="bs-icon-xl bs-icon-circle bs-icon-primary bs-icon my-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-person">
+                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z"></path>
+                            </svg>
+                        </div>
+
+                        <form class="text-center" method="post" id="user_form">
+                            {% csrf_token %}
+
+                            <div class="mb-3">
+                                <input class="form-control {% if form.email.errors %}is-invalid{% endif %}" value="{{ form.email.value|default:'' }}" type="email" id="email" name="email" placeholder="Email" required autofocus title="Please fill out your valid Email ID.">
+                                {% for error in form.email.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                <input class="form-control {% if form.phone_number.errors %}is-invalid{% endif %}" value="{{ form.phone_number.value|default:'' }}" type="tel" id="phone_number" name="phone_number" pattern="^\d{10}$" placeholder="Phone Number" title="Must be exactly 10 digits.">
+                                {% for error in form.phone_number.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3 password-container">
+                                <input class="form-control {% if form.password.errors %}is-invalid{% endif %}" type="password" id="password" name="password" placeholder="Password" required title="Must contain at least one number, one uppercase and lowercase letter, one allowed special character[!@#$%^&amp;*] , and at least 8 or max 16 characters" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*]).{8,16}$" minlength="8" maxlength="16">
+                                {% for error in form.password.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                                <div id="password-rules">
+                                    <p id="length" class="invalid">✔ 8-16 characters</p>
+                                    <p id="capital" class="invalid">✔ At least one uppercase letter</p>
+                                    <p id="small" class="invalid">✔ At least one lowercase letter</p>
+                                    <p id="number" class="invalid">✔ At least one number</p>
+                                    <p id="special" class="invalid">✔ At least one special character (!@#$%^&amp;*)</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 password-container">
+                                <input class="form-control {% if form.confirm_password.errors %}is-invalid{% endif %}" type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required title="Must match your password">
+                                {% for error in form.confirm_password.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                                <div id="password-match-rule">
+                                    <p id="password-match" class="invalid">✔ Confirm Password must match Password</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-3"><button class="btn d-block w-100 button-primary" type="submit">Continue</button></div>
+                            <div>
+                                <p class="text-muted">By creating an account, I accept the&nbsp;<a href="{% url 'terms_n_conditions' %}">Terms and Conditions.</a></p>
+                                <p class="text-muted">Already have an account,&nbsp;<a href="{% url 'login' %}">Login here!</a></p>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="{% static 'js/sign_up.js' %}"></script>
+{% endblock %}

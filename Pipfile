@@ -19,6 +19,8 @@ load-dotenv = "*"
 psycopg = {extras = ["binary"], version = "*"}
 flake8 = "*"
 python-dotenv = "*"
+django-axes = "*"
+argon2-cffi-bindings = "*"
 
 [dev-packages]
 

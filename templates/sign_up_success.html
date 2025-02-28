@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="py-4 py-xl-5">
+    <div class="container">
+        <div class="border rounded border-dark overflow-hidden bg-trans bg-box-theme">
+            <div class="row g-0">
+                <div class="col-md-3 order-first" style="min-height: 250px;padding: 0px;">
+                    <div><span class="background"><dotlottie-wc src="https://lottie.host/154964f9-b793-483a-a7e2-4367b0d57897/UAHJQt7Ju8.lottie" speed="1" style="width: 300px; height: 300px" mode="forward" autoplay loop></dotlottie-wc></span><span class="foreground"><dotlottie-player src="https://lottie.host/652f5cce-2817-42e3-8ceb-0f6ef609b969/6bcy26abYc.lottie" background="transparent" speed="1" style="width: 300px; height: 300px" direction="1" playMode="normal" loop autoplay></dotlottie-player></span></div>
+                </div>
+                <div class="col-md-9 order-last" style="padding: 24px;">
+                    <div class="p-4 p-md-5">
+                        <h2 class="fw-bold mb-3">Welcome to&nbsp;<strong class="text-primary">Little&nbsp;</strong><strong class="text-secondary">Lemon!</strong></h2>
+                        <p class="lead mb-4">Your account created&nbsp;<span class="text-secondary">successfully!</span></p>
+                        <div class="my-3"><a class="btn me-2 button-primary btn-lg" role="button" href="{% url 'login' %}">Login</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

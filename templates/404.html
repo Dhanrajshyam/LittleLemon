@@ -1,0 +1,57 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Little Lemon</title>
+    <meta name="description" content="It is Web application for a Restaurant named Little Lemon" />
+    <meta name="author"
+          content="Based in Katpadi, Vellore, Tamilnadu, India, Little Lemon is a family owned Indian/Mediterranean restaurant, focused on traditional recipes served with a modern twist." />
+
+    <!-- Load favicon -->
+    <link rel="shortcut icon"
+          type="image/png"
+          href="{% static 'img/icon/favicon.ico' %}" />
+
+    <script src="{% static 'js/theme-toggle.js' %}"></script>
+
+
+    <!-- Include your CSS files here -->
+    <link rel="preload" as="style" href="{% static 'bootstrap/css/bootstrap.min.css' %}" onload="this.rel = 'stylesheet'" />
+    <link rel="preload" as="style" href="{% static 'css/bs-theme-overrides.css' %}" onload="this.rel = 'stylesheet'" />
+    <link rel="preload" as="style" href="{% static 'css/styles.css' %}" onload="this.rel = 'stylesheet'" />
+
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Dancing+Script&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik&amp;display=swap">
+
+    <!--Lottie Animation-->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@latest/dist/dotlottie-wc.js" type="module"></script>
+
+</head>
+
+<body>
+    <main>
+        <section>
+            <div class="container">
+                <div class="text-center" style="padding-top: 14px;">
+                    <h3 class="fw-bold mb-2">Wanna go back to Homepage</h3><a class="btn ms-md-2 button-primary" role="button" href="{% url 'home' %}">Home</a>
+                </div>
+                <div>
+                    <dotlottie-wc src="https://lottie.host/b95cbf2a-c9c9-4753-9d48-e4cec505234c/tOtpzDnF7r.lottie" direction="1" playMode="bounce" background="transparent" speed="1" autoplay loop></dotlottie-wc>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="{% static 'js/theme-toggle.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bs-init.js' %}"></script>
+</body>
+
+</html>

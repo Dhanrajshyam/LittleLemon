@@ -36,6 +36,11 @@ DEBUG = True
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 ALLOWED_HOSTS.append('testserver')
 
+# Custom User Model
+AUTH_USER_MODEL = "Restaurant.CustomUser"
+LOGIN_URL = "login"  # Redirect to login page
+LOGIN_REDIRECT_URL = "home"  # Redirect after login
+LOGOUT_REDIRECT_URL = "home"  # Redirect after logout
 
 # Application definition
 
@@ -46,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'axes',
     'rest_framework',
     'rest_framework.authtoken',
     'Restaurant',
@@ -59,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = 'Littlelemon.urls'
@@ -85,6 +92,21 @@ WSGI_APPLICATION = 'Littlelemon.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = { # MySQL Database
+#         'default': {
+#             'ENGINE': 'django.db.backends.mysql',
+#             'NAME': os.getenv('DATABASE_NAME'),
+#             'USER': os.getenv('DATABASE_USER'),
+#             'PASSWORD': os.getenv('USER_PASSWORD'),
+#             'HOST': os.getenv('DATABASE_HOST'),
+#             'PORT': os.getenv('DATABASE_PORT'),
+#             'TEST': {
+#                 'NAME': 'test_db',  # Separate test database
+#             },
+#         }
+#     }
+
+# If you are using MySQL, uncomment the above DATABASES setting and comment the below DATABASES setting. Update your database settings in the .env file or here directly.
 
 if ENVIRONMENT == 'development':
     DATABASES = {
@@ -130,6 +152,12 @@ elif ENVIRONMENT == 'production':  # For Render or Heroku
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',  # Required for django-axes (brute force protection)
+    'django.contrib.auth.backends.ModelBackend',  # Default Django authentication
+]
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -144,6 +172,33 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Prevents JavaScript from accessing session cookies, mitigating cross-site scripting (XSS) attacks.
+SESSION_COOKIE_HTTPONLY = True 
+
+# Prevents the browser from sending the session cookie along with cross-site requests, mitigating cross-site request forgery (CSRF) attacks.
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+# On login, user session will expire after 60 minutes of inactivity and the session will be deleted when the user closes the browser.
+SESSION_COOKIE_AGE = 3600  # 60 minutes (3600 seconds)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Rate Limiting Settings (Prevent Brute Force Attacks) 
+AXES_FAILURE_LIMIT = 1000  # Block user after 1000 failed login attempts
+AXES_COOLOFF_TIME = 1  # Lockout time in hours (set 1 for 1 hour)
+
+
+# Secure Password Settings
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',  # Most secure option
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',  # Fallback option
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',  # Another fallback
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',  # Optional backup
+]
+
+
+
 
 
 # Internationalization
@@ -162,6 +217,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    BASE_DIR / "Restaurant/static",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -189,3 +248,11 @@ REST_FRAMEWORK = {
         'rest_framework_csv.parsers.CSVParser',
     ]
 }
+
+# Email settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
