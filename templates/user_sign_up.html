@@ -11,14 +11,6 @@
             </div>
         </div>
 
-        {% if user_form.non_field_errors %}
-        <div class="error-messages">
-            {% for error in user_form.non_field_errors %}
-            <p style="color: red;">{{ error }}</p>
-            {% endfor %}
-        </div>
-        {% endif %}
-
         <div class="row d-flex justify-content-center">
             <div class="col-md-6 col-xl-4">
                 <div class="card mb-5">
@@ -31,10 +23,26 @@
 
                         <form class="text-center" method="post" id="user_form">
                             {% csrf_token %}
-                            <div class="mb-3"><input class="form-control" type="email" id="email" name="email" placeholder="Email" required="" title="Please fill out your valid Email ID."></div>
-                            <div class="mb-3"><input class="form-control" type="tel" name="phone_number" placeholder="Phone Number" title="Must be exactly 10 digits."></div>
+
+                            <div class="mb-3">
+                                <input class="form-control {% if form.email.errors %}is-invalid{% endif %}" value="{{ form.email.value|default:'' }}" type="email" id="email" name="email" placeholder="Email" required autofocus title="Please fill out your valid Email ID.">
+                                {% for error in form.email.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                <input class="form-control {% if form.phone_number.errors %}is-invalid{% endif %}" value="{{ form.phone_number.value|default:'' }}" type="tel" id="phone_number" name="phone_number" pattern="^\d{10}$" placeholder="Phone Number" title="Must be exactly 10 digits.">
+                                {% for error in form.phone_number.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
                             <div class="mb-3 password-container">
-                                <input class="form-control" type="password" id="password" name="password" placeholder="Password" required="" title="Must contain at least one number, one uppercase and lowercase letter, one allowed special character[!@#$%^&amp;*] , and at least 8 or max 16 characters" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*]).{8,16}" minlength="8" maxlength="16">
+                                <input class="form-control {% if form.password.errors %}is-invalid{% endif %}" type="password" id="password" name="password" placeholder="Password" required title="Must contain at least one number, one uppercase and lowercase letter, one allowed special character[!@#$%^&amp;*] , and at least 8 or max 16 characters" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*]).{8,16}$" minlength="8" maxlength="16">
+                                {% for error in form.password.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
                                 <div id="password-rules">
                                     <p id="length" class="invalid">✔ 8-16 characters</p>
                                     <p id="capital" class="invalid">✔ At least one uppercase letter</p>
@@ -43,16 +51,21 @@
                                     <p id="special" class="invalid">✔ At least one special character (!@#$%^&amp;*)</p>
                                 </div>
                             </div>
+
                             <div class="mb-3 password-container">
-                                <input class="form-control" type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required="" title="Must match your password">
+                                <input class="form-control {% if form.confirm_password.errors %}is-invalid{% endif %}" type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required title="Must match your password">
+                                {% for error in form.confirm_password.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
                                 <div id="password-match-rule">
                                     <p id="password-match" class="invalid">✔ Confirm Password must match Password</p>
                                 </div>
                             </div>
-                            <div class="mb-3"><button class="btn btn-primary d-block w-100" type="submit">Continue</button></div>
+
+                            <div class="mb-3"><button class="btn d-block w-100 button-primary" type="submit">Continue</button></div>
                             <div>
                                 <p class="text-muted">By creating an account, I accept the&nbsp;<a href="{% url 'terms_n_conditions' %}">Terms and Conditions.</a></p>
-                                <p class="text-muted">Already have an account,&nbsp;<a href="#">Login here!</a></p>
+                                <p class="text-muted">Already have an account,&nbsp;<a href="{% url 'login' %}">Login here!</a></p>
                             </div>
                         </form>
 

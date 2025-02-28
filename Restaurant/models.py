@@ -1,45 +1,14 @@
 from typing import Required
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission
 from django.core.validators import RegexValidator
+from django.contrib.contenttypes.models import ContentType
+from django.contrib import auth
+from .managers import CustomUserManager
+# from django.contrib.auth.hashers import make_password
 
 
 # Create your models here.
-class Booking(models.Model):
-    name = models.CharField(max_length=255)
-    no_of_guests = models.PositiveIntegerField(default=0)
-    booking_date = models.DateTimeField()
-    
-    def __str__(self):
-        return f'{self.name} | {self.booking_date.date()}'
-
-class Menu(models.Model):
-    title = models.CharField(max_length=255, unique=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    inventory =models.PositiveIntegerField(default=0)
-    
-    def __str__(self):
-        return f'{self.title} | stock {self.inventory}'    
-
-
-class CustomUserManager(BaseUserManager):
-    """Custom manager for our CustomUser model where email is the username"""
-    
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError("The Email field must be set")
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)  # Hash password
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, password=None, **extra_fields):
-        """Create and return a superuser"""
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
-
-        return self.create_user(email, password, **extra_fields)
 
 class CustomUser(AbstractUser):
     """Custom User model that uses email as the primary identifier"""
@@ -59,3 +28,27 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+class Booking(models.Model):
+    name = models.CharField(max_length=255)
+    no_of_guests = models.PositiveIntegerField(default=0)
+    booking_date = models.DateTimeField()
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="bookings")
+    # user = models.ForeignKey(
+    #     get_user_model(), 
+    #     on_delete=models.CASCADE, 
+    #     related_name="bookings"  # Allows access to a user's bookings as user.bookings.all()
+    # )
+    booked_on = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f'{self.name} | {self.booking_date.date()} | User: {self.user.email}'
+
+class Menu(models.Model):
+    title = models.CharField(max_length=255, unique=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    inventory =models.PositiveIntegerField(default=0)
+    
+    def __str__(self):
+        return f'{self.title} | stock {self.inventory}'    
+
