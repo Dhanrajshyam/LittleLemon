@@ -92,6 +92,21 @@ WSGI_APPLICATION = 'Littlelemon.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = { # MySQL Database
+#         'default': {
+#             'ENGINE': 'django.db.backends.mysql',
+#             'NAME': os.getenv('DATABASE_NAME'),
+#             'USER': os.getenv('DATABASE_USER'),
+#             'PASSWORD': os.getenv('USER_PASSWORD'),
+#             'HOST': os.getenv('DATABASE_HOST'),
+#             'PORT': os.getenv('DATABASE_PORT'),
+#             'TEST': {
+#                 'NAME': 'test_db',  # Separate test database
+#             },
+#         }
+#     }
+
+# If you are using MySQL, uncomment the above DATABASES setting and comment the below DATABASES setting. Update your database settings in the .env file or here directly.
 
 if ENVIRONMENT == 'development':
     DATABASES = {
