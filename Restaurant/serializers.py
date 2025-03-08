@@ -8,10 +8,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = CustomUser
         fields = ["url", "email", "first_name", "last_name", "phone_number", "groups"]
         
-class MenuSerializer(serializers.ModelSerializer):
+class MenuSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Menu
-        fields = '__all__'
+        fields = ['url', 'id', 'title', 'description', 'category', 'price', 'inventory', 'image_filename']
         
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
