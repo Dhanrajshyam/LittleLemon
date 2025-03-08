@@ -22,6 +22,21 @@ def index(request):
     """Homepage of the application"""
     return render(request, 'index.html', {})
 
+def about(request):
+    """About page"""
+    return render(request, 'about.html', {})
+
+def menu(request):
+    """Menu page"""
+    # Fetch all menu items directly from the database
+    menu_list = Menu.objects.all()
+
+    # Prepare context for the template
+    context = {
+        'menu_list': menu_list
+    }
+    return render(request, 'menu.html', context)
+
 
 def terms_n_conditions(request):
     """Terms and conditions page"""
