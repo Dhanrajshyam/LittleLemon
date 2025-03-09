@@ -6,6 +6,8 @@ from django.urls import reverse
 import os
 import requests
 from dotenv import load_dotenv
+from datetime import time, timedelta, datetime
+from .models import BookedSlot
 
 # Load environment variables from .env file
 load_dotenv()
@@ -46,3 +48,30 @@ def send_verification_email(user):
     message = f"click the link to verify your email: {full_url}"
     to_email = user.email
     send_mailgun_email(subject, message, to_email)
+    
+
+def get_available_slots(booking_date, buffer_minutes=10):
+    """Returns available 30-minute time slots with buffer time"""
+    all_slots = []
+    start_time = datetime.strptime("10:00:00", "%H:%M:%S").time()  # 10:00 AM
+    end_time = datetime.strptime("22:00:00", "%H:%M:%S").time()  # 10:00 PM
+    slot_duration = timedelta(minutes=30)
+    buffer_duration = timedelta(minutes=buffer_minutes)
+
+    # Generate all possible slots with buffer
+    current = datetime.combine(booking_date, start_time)
+    while current.time() < end_time:
+        next_slot_start = current + slot_duration + buffer_duration
+        if next_slot_start.time() <= end_time:
+            all_slots.append((current.time(), next_slot_start.time()))
+        current += slot_duration + buffer_duration  # Move to next slot
+
+    # Get booked slots
+    booked_slots = BookedSlot.objects.filter(
+        booking__booking_date__date=booking_date
+    ).values_list("start_time", "end_time")
+
+    # Remove booked slots
+    available_slots = [slot for slot in all_slots if slot not in booked_slots]
+
+    return available_slots

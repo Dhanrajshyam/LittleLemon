@@ -1,30 +1,40 @@
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
-from rest_framework import viewsets, status
-from .serializers import UserSerializer, MenuSerializer, BookingSerializer
-from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+# From Django Library
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from .models import Menu, Booking, CustomUser
-from .forms import CustomUserSignUpForm, LoginForm
-from django.shortcuts import render, redirect
-from .utils import generate_email_verification_token, verify_email_token, send_mailgun_email, send_verification_email
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-from django.contrib.auth import get_user_model
-from .permissions import IsBranchManagerOrReadOnly
-from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
 
+# From Django Rest Framework
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+
+# From the application - Resturant
+from .serializers import UserSerializer, MenuSerializer, BookingSerializer
+from .models import Menu, Booking, CustomUser
+from .forms import CustomUserSignUpForm, LoginForm
+from .utils import generate_email_verification_token, verify_email_token, send_mailgun_email, send_verification_email, get_available_slots
+from .permissions import IsBranchManagerOrReadOnly
+
+# From Python Library
+from datetime import datetime
 
 # Create your views here.
+
+
 def index(request):
     """Homepage of the application"""
     return render(request, 'index.html', {})
 
+
 def about(request):
     """About page"""
     return render(request, 'about.html', {})
+
 
 def menu(request):
     """Menu page"""
@@ -101,7 +111,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def get_queryset(self):
         """
         Restrict data based on user groups
@@ -111,8 +121,9 @@ class UserViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.groups.filter(name='Branch_Manager').exists():
             return get_user_model().objects.all()  # Branch Managers get all users
-        return get_user_model().objects.filter(id=user.id)  # Normal users get only their own data
-    
+        # Normal users get only their own data
+        return get_user_model().objects.filter(id=user.id)
+
     def create(self, request, *args, **kwargs):
         """Create a new user"""
         serializer = self.get_serializer(data=request.data)
@@ -120,11 +131,11 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response({'message': 'User created Successfully!'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def list(self, request, *args, **kwargs):
         """Retrieve a list of users"""
         return super().list(request, *args, **kwargs)
-    
+
     def retrieve(self, request, *args, **kwargs):
         """Retrieve a user"""
         return super().retrieve(request, *args, **kwargs)
@@ -140,7 +151,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         """Delete a user"""
         return super().destroy(request, *args, **kwargs)
-    
+
 
 class MenuViewSet(viewsets.ModelViewSet):
     """
@@ -182,7 +193,7 @@ class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def get_queryset(self):
         """
         Restrict data based on user groups.
@@ -193,7 +204,8 @@ class BookingViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.groups.filter(name='Branch_Manager').exists():
             return Booking.objects.all()  # Branch Managers get all user's bookings
-        return Booking.objects.filter(user=user) # Normal users see only their own bookings
+        # Normal users see only their own bookings
+        return Booking.objects.filter(user=user)
 
     def list(self, request, *args, **kwargs):
         """Retrieve a list of bookings"""
@@ -201,7 +213,10 @@ class BookingViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """Create a new booking"""
-        return super().create(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=self.request.user, status=Booking.Status.BOOKED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):
         """Retrieve a booking by ID"""
@@ -209,12 +224,62 @@ class BookingViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         """Update a booking by ID"""
+
+        instance = self.get_object()
+        user = request.user
+
+        # Prevent updates on past bookings
+        if instance.booking_date < now().date():
+            return Response({"error": "Cannot modify past bookings"}, status=400)
+
+        # Restrict normal users from updating status
+        if "status" in request.data and not user.groups.filter(name='Branch_Manager').exists():
+            return Response({"error": "Only Branch Managers can change booking status"}, status=403)
+
         return super().update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
         """Partially update a booking by ID"""
+
+        instance = self.get_object()
+        user = request.user
+
+        # Prevent updates on past bookings
+        if instance.booking_date < now().date():
+            return Response({"error": "Cannot modify past bookings"}, status=400)
+
+        # Restrict normal users from updating status
+        if "status" in request.data and not user.groups.filter(name='Branch_Manager').exists():
+            return Response({"error": "Only Branch Managers can change booking status"}, status=403)
+
         return super().partial_update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         """Delete a booking by ID"""
+
+        instance = self.get_object()
+
+        # Prevent deletes on past bookings
+        if instance.booking_date < now().date():
+            return Response({"error": "Cannot delete past bookings"}, status=400)
+
         return super().destroy(request, *args, **kwargs)
+
+    @action(detail=False, methods=["get"])
+    def available_slots(self, request):
+        """
+        Returns real-time available slots for a given date.
+        """
+        date_str = request.query_params.get("date")
+        if not date_str:
+            return Response({"error": "Date parameter is required"}, status=400)
+
+        try:
+            # booking_date = datetime.strptime(date_str, "%d-%m-%Y").date()
+            booking_date = datetime.strptime(date_str).date()
+            # Fetch dynamically available slots
+            slots = get_available_slots(booking_date)
+            return Response({"available_slots": slots})
+
+        except ValueError:
+            return Response({"error": "Invalid date format"}, status=400)

@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, MenuViewSet, BookingViewSet, index, about, menu , user_login, user_logout, UserSignUpView, terms_n_conditions
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 router = DefaultRouter(trailing_slash=False)
 router.register(r"users", UserViewSet, basename="customuser")
@@ -16,7 +17,8 @@ urlpatterns = [
     path('terms/', terms_n_conditions, name= "terms_n_conditions"),
     path('login/', user_login, name="login"),
     path('logout/', user_logout, name="logout"),
-
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 
     # path("verify-email/<uidb64>/<token>/", views.verify_email, name="verify_email"),
 ]
