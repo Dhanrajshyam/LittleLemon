@@ -3,6 +3,7 @@
 {% url 'home' as home %}
 {% url 'about' as about %}
 {% url 'menu' as menu %}
+{% url 'book' as book %}
 {% url 'user_sign_up' as user_sign_up %}
 {% url 'login' as login %}
 {% url 'logout' as logout %}
@@ -17,7 +18,7 @@
                     <li class="nav-item"><a class="nav-link {% if request.path == home %}active{% endif %}" href="{{ home }}">Home</a></li>
                     <li class="nav-item"><a class="nav-link {% if request.path == about %}active{% endif %}" href='{{ about }}'>About</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ menu }}">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Book</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ book }}">Book</a></li>
                     <li class="nav-item">
                         <a class="nav-link" id="themeToggle" role="button" href="#">
                             <p style="display:inline;" id="themeIcon">

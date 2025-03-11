@@ -11,17 +11,19 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
+from rest_framework import filters
+
+# From Python Library
+from datetime import datetime
 
 # From the application - Resturant
 from .serializers import UserSerializer, MenuSerializer, BookingSerializer
 from .models import Menu, Booking, CustomUser
 from .forms import CustomUserSignUpForm, LoginForm
 from .utils import generate_email_verification_token, verify_email_token, send_mailgun_email, send_verification_email, get_available_slots
-from .permissions import IsBranchManagerOrReadOnly
+from .permissions import IsBranchManagerOrReadOnly, IsBranchManager
 
-# From Python Library
-from datetime import datetime
 
 # Create your views here.
 
@@ -47,6 +49,10 @@ def menu(request):
     }
     return render(request, 'menu.html', context)
 
+
+def book(request):
+    """Book a Reservation in the restaurant"""
+    return render(request, 'book.html', {})
 
 def terms_n_conditions(request):
     """Terms and conditions page"""
@@ -111,6 +117,9 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["email", "first_name", "last_name", "phone_number"]
+    ordering_fields = ["first_name", "last_name", "groups__name"]
 
     def get_queryset(self):
         """
@@ -126,6 +135,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """Create a new user"""
+        if request.method == 'POST' and not request.user.groups.filter(name="Branch_Manager").exists():
+            return Response({'error': f'Normal user can create an account from UI - Sign up page.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -160,6 +171,9 @@ class MenuViewSet(viewsets.ModelViewSet):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     permission_classes = [IsBranchManagerOrReadOnly]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title', 'category']
+    ordering_fields = ['title', 'description', 'category', 'price', 'inventory']
 
     def list(self, request, *args, **kwargs):
         """Retrieve a list of menu items"""
@@ -193,6 +207,9 @@ class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["user__email", "name", "phone"]
+    ordering_fields = ["name",  "booking_date", "status"]
 
     def get_queryset(self):
         """
@@ -215,7 +232,11 @@ class BookingViewSet(viewsets.ModelViewSet):
         """Create a new booking"""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        # slots = serializer.validated_data['slots']
+        # serializer.validated_data.pop("slots", None)
         serializer.save(user=self.request.user, status=Booking.Status.BOOKED)
+        # for slot in slots:
+        #     BookedSlot.objects.create(booking=serializer.instance, **slot)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):
@@ -272,14 +293,16 @@ class BookingViewSet(viewsets.ModelViewSet):
         """
         date_str = request.query_params.get("date")
         if not date_str:
-            return Response({"error": "Date parameter is required"}, status=400)
+            return Response({"error": "Date parameter is required in url. Format: DD-MM-YYYY. e.g. <domain>/api/booking/available_slots?date=10-03-2025"}, status=400)
 
         try:
-            # booking_date = datetime.strptime(date_str, "%d-%m-%Y").date()
-            booking_date = datetime.strptime(date_str).date()
+            if date_str[1] == '-' or date_str[2] == '-':
+                booking_date = datetime.strptime(date_str, "%d-%m-%Y").date()
+            else:
+                booking_date = datetime.strptime(date_str, "%Y-%m-%d").date()
             # Fetch dynamically available slots
-            slots = get_available_slots(booking_date)
+            slots = get_available_slots(booking_date, buffer_minutes=0)
             return Response({"available_slots": slots})
 
         except ValueError:
-            return Response({"error": "Invalid date format"}, status=400)
+            return Response({"error": "Invalid date format. Required format: DD-MM-YYYY"}, status=400)
