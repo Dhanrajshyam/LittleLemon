@@ -74,7 +74,7 @@ class Booking(models.Model):
         validators=[RegexValidator(r"^\d{10}$", message="Phone number must be exactly 10 digits.")]
     )
     no_of_guests = models.PositiveIntegerField(default=0)
-    booking_date = models.DateTimeField()
+    booking_date = models.DateField()
     message = models.TextField(blank=True, null=True)
     status = models.CharField(
         max_length=20,

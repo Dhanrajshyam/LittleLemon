@@ -50,11 +50,11 @@ def send_verification_email(user):
     send_mailgun_email(subject, message, to_email)
     
 
-def get_available_slots(booking_date, buffer_minutes=10):
+def get_available_slots(booking_date, buffer_minutes=10, hour_format="12-hour"):
     """Returns available 30-minute time slots with buffer time"""
     all_slots = []
-    start_time = datetime.strptime("10:00:00", "%H:%M:%S").time()  # 10:00 AM
-    end_time = datetime.strptime("22:00:00", "%H:%M:%S").time()  # 10:00 PM
+    start_time = datetime.strptime("10:00", "%H:%M").time()  # 10:00 AM
+    end_time = datetime.strptime("22:00", "%H:%M").time()  # 10:00 PM
     slot_duration = timedelta(minutes=30)
     buffer_duration = timedelta(minutes=buffer_minutes)
 
@@ -63,7 +63,10 @@ def get_available_slots(booking_date, buffer_minutes=10):
     while current.time() < end_time:
         next_slot_start = current + slot_duration + buffer_duration
         if next_slot_start.time() <= end_time:
-            all_slots.append((current.time(), next_slot_start.time()))
+            if hour_format == "12-hour":
+                all_slots.append((get_12hour_format(current.time()), get_12hour_format(next_slot_start.time())))
+            else:
+                all_slots.append((current.time(), next_slot_start.time()))
         current += slot_duration + buffer_duration  # Move to next slot
 
     # Get booked slots
@@ -75,3 +78,7 @@ def get_available_slots(booking_date, buffer_minutes=10):
     available_slots = [slot for slot in all_slots if slot not in booked_slots]
 
     return available_slots
+
+def get_12hour_format(time_obj):
+    """Convert 24-hour format to 12-hour format"""
+    return time_obj.strftime("%I:%M %p")
