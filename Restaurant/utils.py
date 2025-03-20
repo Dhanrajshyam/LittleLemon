@@ -7,7 +7,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from datetime import time, timedelta, datetime
-from .models import BookedSlot
+from .models import BookedSlot, Booking
 
 # Load environment variables from .env file
 load_dotenv()
@@ -70,12 +70,20 @@ def get_available_slots(booking_date, buffer_minutes=10, hour_format="12-hour"):
         current += slot_duration + buffer_duration  # Move to next slot
 
     # Get booked slots
-    booked_slots = BookedSlot.objects.filter(
-        booking__booking_date__date=booking_date
-    ).values_list("start_time", "end_time")
-
-    # Remove booked slots
-    available_slots = [slot for slot in all_slots if slot not in booked_slots]
+    registered_bookings = Booking.objects.filter(booking_date = booking_date)
+    if len(registered_bookings) <= 0:
+        booked_slots = []
+    else:
+        booked_slots = BookedSlot.objects.filter(
+        booking__in=registered_bookings
+    )
+    # Get Available slots
+    if booked_slots:
+        booked_slots = booked_slots.values_list("start_time", "end_time")
+        # Remove booked slots
+        available_slots = [slot for slot in all_slots if slot not in booked_slots]
+    else:
+        available_slots = all_slots
 
     return available_slots
 
