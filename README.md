@@ -83,6 +83,8 @@ Visit `http://127.0.0.1:8000/` in your browser.
 |   Name   | API Endpoint | Http Method | Available Format | Description |
 | -------- | ------------ | ----------- | ---------------- | ----------- |
 |**home**|`^\Z`|get|html|Homepage of the application|
+|**about**|`^about/\Z`|get|html|About page|
+|**menu**|`^menu/\Z`|get|html|Menu page|
 |**customuser-list**|`^api/^users$`|get|json,api,xml,csv|Retrieve a list of users|
 ||`^api/^users$`|post|json,api,xml,csv|Create a new user|
 ||`^api/^users\.(?P<format>[a-z0-9]+)/?$`|get|json,api,xml,csv|Retrieve a list of users|
@@ -111,6 +113,10 @@ Visit `http://127.0.0.1:8000/` in your browser.
 ||`^api/^booking$`|post|json,api,xml,csv|Create a new booking|
 ||`^api/^booking\.(?P<format>[a-z0-9]+)/?$`|get|json,api,xml,csv|Retrieve a list of bookings|
 ||`^api/^booking\.(?P<format>[a-z0-9]+)/?$`|post|json,api,xml,csv|Create a new booking|
+|**booking-available-slots**|`^api/^booking/available_slots$`|get|json,api,xml,csv|Returns real-time available slots for a given date.
+Disables already booked slots dynamically.|
+||`^api/^booking/available_slots\.(?P<format>[a-z0-9]+)/?$`|get|json,api,xml,csv|Returns real-time available slots for a given date.
+Disables already booked slots dynamically.|
 |**booking-detail**|`^api/^booking/(?P<pk>[^/.]+)$`|get|json,api,xml,csv|Retrieve a booking by ID|
 ||`^api/^booking/(?P<pk>[^/.]+)$`|put|json,api,xml,csv|Update a booking by ID|
 ||`^api/^booking/(?P<pk>[^/.]+)$`|patch|json,api,xml,csv|Partially update a booking by ID|
@@ -140,7 +146,8 @@ Visit `http://127.0.0.1:8000/` in your browser.
 
 ## Booking API Endpoints
 - Users with Branch_Manager group can perform all CRUD operations on all booking by all users.
-- Normal users can view the list of bookings booked by them and its booking details.
+- Normal users(Authenticated) can view the list of bookings booked by them and its booking details.
+- Anonymous (Unauthenticated) Users can't access the booking API endpoints.
 
 ---
 
