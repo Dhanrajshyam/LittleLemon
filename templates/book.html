@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="text-center ms-4 mt-4 position-relative z-1">
+                <h1 class="fw-bold mb-3">Welcome to&nbsp;<strong class="text-primary">Little&nbsp;</strong><strong
+                        class="text-secondary">Lemon!</strong></h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form id="booking_form" class="bg-box-theme" method="post">
+                <h2 class="text-center">New Booking</h2>
+                <div><label class="form-label" for="name">Your Name
+                    <br>
+                    <input class="form-control form-input" type="text"
+                            id="name" name="name" placeholder="Enter Your Name" required="" autofocus=""
+                            autocomplete=""><span class="validity"></span></label></div>
+                <div><label class="form-label" for="phone">Phone Number
+                    <br>
+                    <input class="form-control form-input"
+                            type="text" id="phone" name="phone" placeholder="Enter Phone Number(10 digits)"
+                            minlength="10" maxlength="10" required="" autocomplete=""><span
+                            class="validity"></span></label></div>
+                <div><label class="form-label">No. of Guests
+                    <br>
+                    <input class="form-control form-input" type="number"
+                            id="no_of_guests" name="no_of_guests" placeholder="Enter Number of Guests" value="1" min="1"
+                            max="10" required=""><span class="validity"></span></label></div>
+                <div><label class="form-label" id="booking_date" name="booking_date" type="date">Booking Date
+                    <br>
+                    <input class="form-control form-input" id="date" type="date" name="date" required=""><span
+                            class="validity"></span></label></div>
+                <div><label class="form-label">Slots
+                    <br>
+                    <select class="form-select" id="slots" name="slots" required="">
+                            <optgroup label="This is a group">
+                                <option value="12" selected="">This is item 1</option>
+                                <option value="13">This is item 2</option>
+                                <option value="14">This is item 3</option>
+                            </optgroup>
+                        </select></label></div>
+                <div><label class="form-label">Message
+                    <br>
+                    <textarea class="form-control" id="message"
+                            name="message"></textarea></label></div>
+                <div><button class="btn button-primary" type="submit">Book Now!</button></div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <section>
+                <form id="search_booking_form" method="post">
+                    <h2 class="text-center d-xl-flex">My Bookings</h2>
+                </form>
+                <div>
+                    <div class="search-container">
+                        <input type="text" id="search_booking" class="form-input" type="search" name="search_booking"
+                            placeholder="Search.." aria-label="Search field">
+                        <button aria-label="Search button" class="btn button-primary fa fa-search"
+                            type="button"></button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <nav class="d-xl-flex">
+                            <ul class="pagination">
+                                <li class="page-item"><a class="page-link" aria-label="Previous" href="#"><span
+                                            aria-hidden="true">«</span></a></li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                <li class="page-item"><a class="page-link" aria-label="Next" href="#"><span
+                                            aria-hidden="true">»</span></a></li>
+                            </ul>
+                        </nav>
+
+                        <div class="booking-container">
+                            <h4 class="booking-title">Upcomming</h4>
+
+                            <div class="ticket-card booked">
+                                <div class="ticket-date">
+                                    <h1>23</h1>
+                                    <span>Feb</span>
+                                    <!-- <div class="status-stamp booked">BOOKED</div>
+                                    <div class="status-stamp cancelled">CANCELLED</div>
+                                    <div class="status-stamp completed">COMPLETED</div>
+                                    <div class="status-stamp failed">FAILED</div> -->
+                                </div>
+                                <div class="ticket-details">
+                                    <h2>Dhanrajshyam S</h2>
+                                    <p>
+                                        <i class="fa fa-calendar"> </i>
+                                        25-Feb-2025
+                                    </p>
+
+                                    <p>
+                                        <i class="fa fa-clock-o"> </i>
+                                        10:30AM - 11:00AM
+                                    </p>
+                                    <p>
+                                        <i class="fa fa-heart-o"></i>
+                                        4 Guests
+                                    </p>
+                                    <p>
+                                        <i class='fa fa-phone'></i>
+                                        +91-9844547545
+                                    </p>
+                                    <button class="ticket-button">Booked</button>
+
+                                </div>
+                            </div>
+
+                            <div class="ticket-card completed">
+                                <div class="ticket-date">
+                                    <h1>23</h1>
+                                    <span>Feb</span>
+                                </div>
+                                <div class="ticket-details">
+                                    <h2>Dhanrajshyam S</h2>
+                                    <p>
+                                        <i class="fa fa-calendar"> </i>
+                                        25-Feb-2025
+                                    </p>
+
+                                    <p>
+                                        <i class="fa fa-clock-o"> </i>
+                                        10:30AM - 11:00AM
+                                    </p>
+                                    <p>
+                                        <i class="fa fa-heart-o"></i>
+                                        4 Guests
+                                    </p>
+                                    <p>
+                                        <i class='fa fa-phone'></i>
+                                        +91-9844547545
+                                    </p>
+                                    <button class="ticket-button">Completed</button>
+                                </div>
+                            </div>
+
+                            <div class="ticket-card completed">
+                                <div class="ticket-date">
+                                    <h1>23</h1>
+                                    <span>Feb</span>
+                                </div>
+                                <div class="ticket-details">
+                                    <h2>Dhanrajshyam S</h2>
+                                    <p>
+                                        <i class="fa fa-calendar"> </i>
+                                        25-Feb-2025
+                                    </p>
+
+                                    <p>
+                                        <i class="fa fa-clock-o"> </i>
+                                        10:30AM - 11:00AM
+                                    </p>
+                                    <p>
+                                        <i class="fa fa-heart-o"></i>
+                                        4 Guests
+                                    </p>
+                                    <p>
+                                        <i class='fa fa-phone'></i>
+                                        +91-9844547545
+                                    </p>
+                                    <button class="ticket-button">Booked</button>
+                                </div>
+                            </div>
+
+                            <div class="ticket-card cancelled">
+                                <div class="ticket-date">
+                                    <h1>23</h1>
+                                    <span>Feb</span>
+                                </div>
+                                <div class="ticket-details">
+                                    <h2>Dhanrajshyam S</h2>
+                                    <p>
+                                        <i class="fa fa-calendar"> </i>
+                                        25-Feb-2025
+                                    </p>
+
+                                    <p>
+                                        <i class="fa fa-clock-o"> </i>
+                                        10:30AM - 11:00AM
+                                    </p>
+                                    <p>
+                                        <i class="fa fa-heart-o"></i>
+                                        4 Guests
+                                    </p>
+                                    <p>
+                                        <i class='fa fa-phone'></i>
+                                        +91-9844547545
+                                    </p>
+                                    <button class="ticket-button">Cancelled</button>
+                                </div>
+                            </div>
+
+                            <div class="ticket-card completed">
+                                <div class="ticket-date">
+                                    <h1>23</h1>
+                                    <span>Feb</span>
+                                </div>
+                                <div class="ticket-details">
+                                    <h2>Dhanrajshyam S</h2>
+                                    <p>
+                                        <i class="fa fa-calendar"> </i>
+                                        25-Feb-2025
+                                    </p>
+
+                                    <p>
+                                        <i class="fa fa-clock-o"> </i>
+                                        10:30AM - 11:00AM
+                                    </p>
+                                    <p>
+                                        <i class="fa fa-heart-o"></i>
+                                        4 Guests
+                                    </p>
+                                    <p>
+                                        <i class='fa fa-phone'></i>
+                                        +91-9844547545
+                                    </p>
+                                    <button class="ticket-button">Booked</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

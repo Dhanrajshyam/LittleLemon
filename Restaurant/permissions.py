@@ -13,3 +13,12 @@ class IsBranchManagerOrReadOnly(permissions.BasePermission):
             return True
         # Allow write permissions only for users in the Branch_Manager group
         return request.user.is_authenticated and request.user.groups.filter(name="Branch_Manager").exists()
+
+class IsBranchManager(permissions.BasePermission):
+    """
+    Custom permission:
+    - Branch_Manager users → Can perform all CRUD operations in api endpoints.
+    """
+
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.groups.filter(name="Branch_Manager").exists()

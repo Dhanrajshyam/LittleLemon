@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
+{% block nav-home %}<a class="nav-link active" href="{% url 'home' %}">Shyam</a>{% endblock %}
 
 {% block content %}
 
@@ -12,7 +12,7 @@
                 <div class="col-md-10 col-xl-12 text-center d-flex d-sm-flex d-md-flex justify-content-center align-items-center mx-auto justify-content-md-start align-items-md-center justify-content-xl-center">
                     <div class="bg-transparent">
                         <h1 class="text-uppercase fw-bold mb-3">Special Offer</h1>
-                        <p class="mb-3 font-size-1_3em">30% This Weekend</p><button class="btn me-2 py-2 px-4 button-primary" type="button">Book Now!</button>
+                        <p class="mb-3 font-size-1_3em">30% This Weekend</p> <a href="{% url 'book' %}"><button class="btn me-2 py-2 px-4 button-primary" type="button">Book Now!</button></a>
                     </div>
                 </div>
             </div>
@@ -27,7 +27,7 @@
                     <img class="card-img-top w-100 d-block" src="{% static 'img/menu/Grill.jpg' %}" alt="Menu Image">
                     <div class="card-body">
                         <h4 class="card-title">Our New Menu</h4>
-                        <p class="card-text">Our menu consists of 12-15 seasonal items based on Italian, Greek, and Turkish culture.</p><button class="btn button-primary" type="button">See Our Menu!</button>
+                        <p class="card-text">Our menu consists of 12-15 seasonal items based on Italian, Greek, and Turkish culture.</p><a href="{% url 'menu' %}"><button class="btn button-primary" type="button">See Our Menu!</button></a> 
                     </div>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                     <img class="card-img-top w-100 d-block" src="{% static 'img/photos/restaurant_inside.jpg' %}" alt="Table Image of Restaurant">
                     <div class="card-body">
                         <h4 class="card-title">Book a Table</h4>
-                        <p class="card-text">Reserve your table for an Italian, Greek, and Turkish dining experience.</p><button class="btn button-primary" type="button">Book a Table Now!</button>
+                        <p class="card-text">Reserve your table for an Italian, Greek, and Turkish dining experience.</p> <a href="{% url 'book' %}"><button class="btn button-primary" type="button">Book a Table Now!</button></a> 
                     </div>
                 </div>
             </div>
