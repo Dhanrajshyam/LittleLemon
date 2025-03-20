@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h2 class="fw-bold mb-3 text-center"><strong class="text-primary">Our&nbsp;</strong><strong class="text-secondary">Menu!</strong></h2>
+    <p class="w-lg-50 dance_style text-center">Happy Tummy! Happy Life!</p>
+    
+    <div class="row pb-5 mb-4">
+
+        {% for menu in menu_list %}
+        <div class="col-lg-3 col-md-6 mb-4">
+            <!--Menu Card-->
+            <div class="card menucard rounded shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class = "productImgFrame">
+                    <img src="{{ menu.image_filename }}" alt="{{ menu.title }}" class="img-fluid d-block mx-auto mb-3">
+                    </div>
+                    <div>
+                        <h5>{{ menu.title }}</h5>
+                        <p class="small text-muted font-italic">{{ menu.description }}</p>
+                        <p class="small text-muted font-italic">Category: {{ menu.category }}</p>
+                        <h5 class="fw-bold mb-3">Price: ₹<strong class="text-primary">{{ menu.price }}</strong></h5>
+                    
+                        <ul class="list-inline small">
+                            <li class="list-inline-item m-0"><i class="fa fa-star text-success"></i></li>
+                            <li class="list-inline-item m-0"><i class="fa fa-star text-success"></i></li>
+                            <li class="list-inline-item m-0"><i class="fa fa-star text-success"></i></li>
+                            <li class="list-inline-item m-0"><i class="fa fa-star text-success"></i></li>
+                            <li class="list-inline-item m-0"><i class="fa fa-star text-success"></i></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+.bootstrap_cards2 {
+  min-height: 100vh;
+  background: #fafafa;
+}
+
+.social-link {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  border-radius: 50%;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.social-link:hover, .social-link:focus {
+  background: #ddd;
+  text-decoration: none;
+  color: #555;
+}
+
+.progress {
+  height: 10px;
+}
+
+.menucard:hover {
+  transform: scale(1.1);
+  z-index: 100;
+}
+
+.productImgFrame {
+  aspect-ratio: 1/1;
+  align-content: center;
+}
+

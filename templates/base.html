@@ -12,9 +12,12 @@
           content="Based in Katpadi, Vellore, Tamilnadu, India, Little Lemon is a family owned Indian/Mediterranean restaurant, focused on traditional recipes served with a modern twist." />
 
     <!-- Load favicon -->
-    <link rel="shortcut icon"
-          type="image/png"
-          href="{% static 'img/icon/favicon.ico' %}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/icon/favicon-16x16.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/icon/favicon-16x16.png' %}" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/icon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/icon/favicon-32x32.png' %}" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'img/icon/android-chrome-192x192.png' %}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{% static 'img/icon/android-chrome-512x512.png' %}">
 
     <script src="{% static 'js/theme-toggle.js' %}"></script>
 
@@ -26,12 +29,15 @@
     <link rel="preload" as="style" href="{% static 'css/styles.css' %}" onload="this.rel = 'stylesheet'" />
     <link rel="preload" as="style" href="{% static 'css/animate.min.css' %}" onload="this.rel = 'stylesheet'" />
     <link rel="preload" as="style" href="{% static 'css/mobile_navbar.css' %}" onload="this.rel = 'stylesheet'" />
+    <link rel="preload" as="style" href="{% static 'css/Bootstrap-Cards-v2.css' %}" onload="this.rel = 'stylesheet'" />
+    
 
     <!--Fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Dancing+Script&amp;display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit&amp;display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik&amp;display=swap">
+    <link rel="stylesheet" href="{%static 'fonts/font-awesome.min.css' %}">
 
 </head>
 
