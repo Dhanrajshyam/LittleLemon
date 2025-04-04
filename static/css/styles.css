@@ -192,7 +192,7 @@ label {
 .ticket-card {
   display: flex;
   /*align-items: center;*/
-  background-color: var(--bs-body-color);
+  background-color: #d5ce75;
   border-radius: 20px;
   padding: 20px;
   max-width: 450px;
@@ -212,6 +212,11 @@ label {
 .ticket-card.completed {
   background-color: var(--bs-primary);
 }
+
+.ticket-card.failed {
+  background-color: var(--bs-warning);
+}
+
 
 .ticket-card:before, .ticket-card:after {
   content: '';
