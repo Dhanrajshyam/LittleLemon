@@ -18,10 +18,11 @@ from rest_framework import filters
 from datetime import datetime
 
 # From the application - Resturant
-from .serializers import UserSerializer, MenuSerializer, BookingSerializer
-from .models import Menu, Booking, CustomUser
+from .serializers import UserSerializer, MenuSerializer, BookingSerializer, RestuarantSerializer, HolidaySerializer
+from .models import Menu, Booking, CustomUser, Restaurant, Holiday
 from .forms import CustomUserSignUpForm, LoginForm
-from .utils import generate_email_verification_token, verify_email_token, send_mailgun_email, send_verification_email, get_available_slots
+from .utils import generate_email_verification_token, verify_email_token, send_mailgun_email, send_verification_email
+from .utils import is_slot_available
 from .permissions import IsBranchManagerOrReadOnly, IsBranchManager
 
 
@@ -230,13 +231,27 @@ class BookingViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """Create a new booking"""
-        serializer = self.get_serializer(data=request.data)
+        data=request.data
+        serializer = self.get_serializer(data = data)
         serializer.is_valid(raise_exception=True)
-        # slots = serializer.validated_data['slots']
-        # serializer.validated_data.pop("slots", None)
-        serializer.save(user=self.request.user, status=Booking.Status.BOOKED)
-        # for slot in slots:
-        #     BookedSlot.objects.create(booking=serializer.instance, **slot)
+        
+        # Book if requested date and time is available
+        try:
+            serializer.save(user=self.request.user, status=Booking.Status.PENDING)
+            slot_available = is_slot_available(
+                serializer.validated_data["branch"],
+                serializer.validated_data["booking_date"],
+                serializer.validated_data["start_time"],
+                serializer.validated_data["end_time"]
+            )
+            if slot_available:
+                serializer.save(status=Booking.Status.BOOKED)
+            else:
+                serializer.save(status=Booking.Status.FAILED)
+                return Response({"error": "One or more slots are already booked. Please try again."}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            serializer.save(status=Booking.Status.FAILED)
+            return Response({"error": "One or more slots are already booked. Please try again."}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):
@@ -285,24 +300,99 @@ class BookingViewSet(viewsets.ModelViewSet):
             return Response({"error": "Cannot delete past bookings"}, status=400)
 
         return super().destroy(request, *args, **kwargs)
-
+        
     @action(detail=False, methods=["get"])
-    def available_slots(self, request):
+    def branches(self, request):
         """
-        Returns real-time available slots for a given date.
+        Returns a list of restaurant branches.
         """
-        date_str = request.query_params.get("date")
-        if not date_str:
-            return Response({"error": "Date parameter is required in url. Format: DD-MM-YYYY. e.g. <domain>/api/booking/available_slots?date=10-03-2025"}, status=400)
+        branches = Restaurant.objects.values_list("branch", flat=True)
+        return Response({"branches": list(branches)})
+    
+    @action(detail=False, methods=["get"])
+    def working_hours(self, request):
+        """
+        Returns the working hours of a specific branch.
+        """
+        branch = request.query_params.get("branch")
+        if not branch:
+            return Response({"error": "Branch parameter is required. e.g. /api/booking/working_hours?branch=Vellore"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            if date_str[1] == '-' or date_str[2] == '-':
-                booking_date = datetime.strptime(date_str, "%d-%m-%Y").date()
-            else:
-                booking_date = datetime.strptime(date_str, "%Y-%m-%d").date()
-            # Fetch dynamically available slots
-            slots = get_available_slots(booking_date, buffer_minutes=0)
-            return Response({"available_slots": slots})
+            restaurant = Restaurant.objects.get(branch=branch)
+            opening_time = restaurant.opening_time.strftime("%H:%M")
+            closing_time = restaurant.closing_time.strftime("%H:%M")
+            return Response({"opening_time": opening_time, "closing_time": closing_time})
+        except Restaurant.DoesNotExist:
+            return Response({"error": "Branch not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        except ValueError:
-            return Response({"error": "Invalid date format. Required format: DD-MM-YYYY"}, status=400)
+
+class RestaurantViewset(viewsets.ModelViewSet):
+    """
+    Handles restaurant-related operations.
+    """
+    queryset = Restaurant.objects.all()
+    serializer_class = RestuarantSerializer
+    permission_classes = [IsBranchManager]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['branch', 'phone']
+    ordering_fields = ['branch']
+
+    def list(self, request, *args, **kwargs):
+        """Retrieve a list of restaurants"""
+        return super().list(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        """Create a new restaurant-branch"""
+        return super().create(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        """Retrieve a restaurant by ID"""
+        return super().retrieve(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """Update a restaurant by ID"""
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        """Partially update a restaurant by ID"""
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """Delete a restaurant by ID"""
+        return super().destroy(request, *args, **kwargs)
+    
+class HolidayViewSet(viewsets.ModelViewSet):
+    """
+    Handles holiday-related operations.
+    """
+    queryset = Holiday.objects.all()
+    serializer_class = HolidaySerializer
+    permission_classes = [IsBranchManager]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['holiday_date', 'description']
+    ordering_fields = ['holiday_date', 'description']
+
+    def list(self, request, *args, **kwargs):
+        """Retrieve a list of holidays"""
+        return super().list(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        """Create a new holiday"""
+        return super().create(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        """Retrieve a holiday by ID"""
+        return super().retrieve(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """Update a holiday by ID"""
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        """Partially update a holiday by ID"""
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """Delete a holiday by ID"""
+        return super().destroy(request, *args, **kwargs)

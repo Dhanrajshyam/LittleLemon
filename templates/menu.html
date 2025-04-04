@@ -12,10 +12,10 @@
         {% for menu in menu_list %}
         <div class="col-lg-3 col-md-6 mb-4">
             <!--Menu Card-->
-            <div class="card menucard rounded shadow-sm border-0">
+            <div class="card menucard rounded border-0">
                 <div class="card-body p-4">
                     <div class = "productImgFrame">
-                    <img src="{{ menu.image_filename }}" alt="{{ menu.title }}" class="img-fluid d-block mx-auto mb-3">
+                    <img src="{{ menu.image_filename }}" alt="{{ menu.title }}" class="menuimage d-block mx-auto mb-3">
                     </div>
                     <div>
                         <h5>{{ menu.title }}</h5>
