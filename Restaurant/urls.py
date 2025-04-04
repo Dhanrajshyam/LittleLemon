@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, MenuViewSet, BookingViewSet, index, about, menu, book, user_login, user_logout, UserSignUpView, terms_n_conditions
+from .views import RestaurantViewset, HolidayViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework import permissions
 
@@ -24,6 +25,8 @@ router = DefaultRouter(trailing_slash=False)
 router.register(r"users", UserViewSet, basename="customuser")
 router.register(r"menu", MenuViewSet)
 router.register(r"booking", BookingViewSet)
+router.register(r"restaurant", RestaurantViewset)
+router.register(r"holiday", HolidayViewSet)
 
 urlpatterns = [
     path("", index, name="home"),

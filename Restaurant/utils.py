@@ -3,11 +3,12 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.db.models import Count
 import os
 import requests
 from dotenv import load_dotenv
 from datetime import time, timedelta, datetime
-from .models import BookedSlot, Booking
+from .models import Booking, Restaurant
 
 # Load environment variables from .env file
 load_dotenv()
@@ -50,43 +51,44 @@ def send_verification_email(user):
     send_mailgun_email(subject, message, to_email)
     
 
-def get_available_slots(booking_date, buffer_minutes=10, hour_format="12-hour"):
-    """Returns available 30-minute time slots with buffer time"""
-    all_slots = []
-    start_time = datetime.strptime("10:00", "%H:%M").time()  # 10:00 AM
-    end_time = datetime.strptime("22:00", "%H:%M").time()  # 10:00 PM
-    slot_duration = timedelta(minutes=30)
-    buffer_duration = timedelta(minutes=buffer_minutes)
-
-    # Generate all possible slots with buffer
-    current = datetime.combine(booking_date, start_time)
-    while current.time() < end_time:
-        next_slot_start = current + slot_duration + buffer_duration
-        if next_slot_start.time() <= end_time:
-            if hour_format == "12-hour":
-                all_slots.append((get_12hour_format(current.time()), get_12hour_format(next_slot_start.time())))
-            else:
-                all_slots.append((current.time(), next_slot_start.time()))
-        current += slot_duration + buffer_duration  # Move to next slot
-
-    # Get booked slots
-    registered_bookings = Booking.objects.filter(booking_date = booking_date)
-    if len(registered_bookings) <= 0:
-        booked_slots = []
-    else:
-        booked_slots = BookedSlot.objects.filter(
-        booking__in=registered_bookings
-    )
-    # Get Available slots
-    if booked_slots:
-        booked_slots = booked_slots.values_list("start_time", "end_time")
-        # Remove booked slots
-        available_slots = [slot for slot in all_slots if slot not in booked_slots]
-    else:
-        available_slots = all_slots
-
-    return available_slots
-
 def get_12hour_format(time_obj):
     """Convert 24-hour format to 12-hour format"""
     return time_obj.strftime("%I:%M %p")
+
+def get_branches():
+    """Return list of branches"""
+    return Restaurant.objects.values_list("branch", flat=True)
+
+def get_working_hours(branch):
+    """Return working hours of the branch"""
+    branch = Restaurant.objects.get(branch=branch)
+    opening_time = branch.opening_time.strftime("%H:%M")
+    closing_time = branch.closing_time.strftime("%H:%M")
+    return opening_time, closing_time
+
+def is_slot_available(branch, booking_date, start_time, end_time, buffer_tables=2):
+    """
+    Assuming we can take booking of the same time equal to number of tables available in the branch.
+    We can have buffer tables like 2 for walk-in customers.
+    Check existing booking between start_time and end_time for the given branch and booking_date.
+    If number of bookings exceeds or equal to number of tables minus buffer tables, return False.
+    else return True.
+    """
+    branch = Restaurant.objects.get(branch=branch)
+    # booking_date = datetime.strptime(booking_date, "%Y-%m-%d").date()
+    # start_time = datetime.strptime(start_time, "%H:%M").time()
+    # end_time = datetime.strptime(end_time, "%H:%M").time()
+    booked_slots = Booking.objects.filter(
+        branch=branch.branch,
+        booking_date=booking_date,
+        start_time__lt=end_time,
+        start_time__gte=start_time,
+        end_time__gt=start_time,
+        end_time__lte=end_time,
+        status=Booking.Status.BOOKED
+    )
+    if booked_slots.count() >= (branch.no_of_tables - buffer_tables):
+        return False
+    else:
+        return True
+    

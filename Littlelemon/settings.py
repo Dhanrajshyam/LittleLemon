@@ -76,7 +76,7 @@ ROOT_URLCONF = 'Littlelemon.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['C:/Users/bonte/OneDrive/Documents/projects/LittleLemon/LittleLemon/templates'],
+        'DIRS': [BASE_DIR/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

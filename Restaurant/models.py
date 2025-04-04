@@ -1,5 +1,6 @@
 from typing import Required
 from django.db import models
+from django.db.models import Count
 from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission
 from django.core.validators import RegexValidator
 from django.contrib.contenttypes.models import ContentType
@@ -38,62 +39,6 @@ class Holiday(models.Model):
     
     def __str__(self):
         return f'{self.holiday_date} | {self.description}'
-    
-class Timeslot(models.Model):
-    """Reference Timeslots model"""
-    slot_name = models.CharField(max_length=50)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    
-    def __str__(self):
-        return f"{self.slot_name} | {self.start_time} to {self.end_time}"
-    
-class BookedSlot(models.Model):
-    """Booked slots model"""
-    booking = models.ForeignKey("Booking", on_delete=models.CASCADE, related_name="booked_slots")
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-
-    def __str__(self):
-        return f"{self.start_time} - {self.end_time}"
-
-class Booking(models.Model):
-    """Booking model"""
-    
-    class Status(models.TextChoices):
-        PENDING = "PENDING", "Pending"  # Default status after booking request
-        BOOKED = "BOOKED", "Booked"  # Successfully confirmed
-        FAILED = "FAILED", "Failed"  # Payment or system failure or booked by other user
-        CANCELED = "CANCELED", "Canceled"  # User requested cancellation
-        COMPLETED = "COMPLETED", "Completed"  # Successfully served
-
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="bookings")
-    name = models.CharField(max_length=255)
-    phone = models.CharField(
-        max_length=10,
-        validators=[RegexValidator(r"^\d{10}$", message="Phone number must be exactly 10 digits.")]
-    )
-    no_of_guests = models.PositiveIntegerField(default=0)
-    booking_date = models.DateField()
-    message = models.TextField(blank=True, null=True)
-    status = models.CharField(
-        max_length=20,
-        choices=Status.choices,
-        default=Status.PENDING,
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    def clean(self):
-        """Ensure time slot is available before booking"""
-        booked_slots = BookedSlot.objects.filter(
-            booking__booking_date__date=self.booking_date.date(),
-            start_time=self.booking_date.time(),
-        )
-        if booked_slots.exists():
-            raise ValidationError("Selected time slot is already booked. Choose another slot.")
-
-    def __str__(self):
-        return f'{self.name} | {self.booking_date.date()} | User: {self.user.email}'
 
 class Menu(models.Model):
     """Menu model"""
@@ -106,4 +51,61 @@ class Menu(models.Model):
     
     def __str__(self):
         return f'{self.title} | stock {self.inventory}'    
+    
+    
+class Restaurant(models.Model):
+    """Restaurant model"""
+    name = models.CharField(max_length=255, default="Little Lemon Restuarant")
+    branch = models.CharField(max_length=255, unique=True)
+    address = models.TextField(blank=True)
+    phone = models.CharField(
+        max_length=10,
+        validators=[RegexValidator(r"^\d{10}$", message="Phone number must be exactly 10 digits.")]
+    )
+    email = models.EmailField(blank=True)
+    opening_time = models.TimeField(default=time(9, 00))
+    closing_time = models.TimeField(default=time(21, 00))
+    no_of_tables = models.PositiveIntegerField(default=2)
+    # holidays = models.ManyToManyField(Holiday, blank=True)
+    # menu = models.ManyToManyField(Menu, blank=True)
+    
+    def __str__(self):
+        return self.name + " | " + self.branch
+    
+
+class Booking(models.Model):
+    """Booking model"""
+    
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "Pending"  # Default status after booking request
+        BOOKED = "BOOKED", "Booked"  # Successfully confirmed
+        FAILED = "FAILED", "Failed"  # Payment or system failure or booked by other user
+        CANCELED = "CANCELED", "Canceled"  # User requested cancellation
+        COMPLETED = "COMPLETED", "Completed"  # Successfully served
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="bookings")
+    branch = models.CharField(max_length=255, default="Vellore")
+    name = models.CharField(max_length=255)
+    phone = models.CharField(
+        max_length=10,
+        validators=[RegexValidator(r"^\d{10}$", message="Phone number must be exactly 10 digits.")]
+    )
+    no_of_guests = models.PositiveIntegerField(default=1)
+    booking_date = models.DateField()
+    start_time = models.TimeField() # Valid start time is between opening and closing time
+    end_time = models.TimeField() # Valid end time is either in the range of 30 to 90 mins from start time or closing time, whichever is lo
+    message = models.TextField(blank=True, null=True)
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+
+    def __str__(self):
+        return f'{self.name} | {self.booking_date.date()} | User: {self.user.email}'
+
+
+
 
