@@ -40,6 +40,7 @@ class Holiday(models.Model):
     def __str__(self):
         return f'{self.holiday_date} | {self.description}'
 
+
 class Menu(models.Model):
     """Menu model"""
     title = models.CharField(max_length=255, unique=True)
@@ -104,7 +105,7 @@ class Booking(models.Model):
     
 
     def __str__(self):
-        return f'{self.name} | {self.booking_date.date()} | User: {self.user.email}'
+        return f'{self.name} | {self.booking_date} | User: {self.user.email}'
 
 
 

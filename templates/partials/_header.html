@@ -11,14 +11,14 @@
 <header class="site-header">
     <nav class="navbar navbar-expand-md fs-5 py-0 mt-xxl-1 pt-xxl-0 pb-xxl-0">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{{ home }}"><img class="img-fluid" src="{% static 'img/logo/Little_Lemon_Horizontal-wobg.png' %}" width="181" height="66"></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-5"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <a id="littlelemon-logo" class="navbar-brand d-flex align-items-center" href="{{ home }}"><img class="img-fluid" src="{% static 'img/logo/Little_Lemon_Horizontal-wobg.png' %}" width="181" height="66"></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-5"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-5">
                 <ul class="navbar-nav ms-auto">
                     
-                    <li class="nav-item"><a class="nav-link {% if request.path == home %}active{% endif %}" href="{{ home }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link {% if request.path == about %}active{% endif %}" href='{{ about }}'>About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ menu }}">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ book }}">Book</a></li>
+                    <li class="nav-item"><a id="nav-home" class="nav-link {% if request.path == home %}active{% endif %}" href="{{ home }}">Home</a></li>
+                    <li class="nav-item"><a id="nav-about" class="nav-link {% if request.path == about %}active{% endif %}" href='{{ about }}'>About</a></li>
+                    <li class="nav-item"><a id="nav-menu" class="nav-link" href="{{ menu }}">Menu</a></li>
+                    <li class="nav-item"><a id="nav-book" class="nav-link" href="{{ book }}">Book</a></li>
                     <li class="nav-item">
                         <a class="nav-link" id="themeToggle" role="button" href="#">
                             <p style="display:inline;" id="themeIcon">
@@ -31,10 +31,10 @@
                         </a>
                     </li>                    
                     {% if request.user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="{{ logout }}">Logout</a></li>
+                        <li id="logout" class="nav-item"><a class="nav-link" href="{{ logout }}">Logout</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="btn swing animated ms-md-2 button-primary" role="button" href="{{ user_sign_up }}">Sign up</a></li>
-                        <li class="nav-item"><a class="btn ms-md-2 button-primary" role="button" href="{{ login }}">Login</a></li>
+                        <li class="nav-item"><a id="sign-up" class="btn swing animated ms-md-2 button-primary" role="button" href="{{ user_sign_up }}">Sign up</a></li>
+                        <li class="nav-item"><a id="login" class="btn ms-md-2 button-primary" role="button" href="{{ login }}">Login</a></li>
                     {% endif %}
                 </ul>
             </div>
