@@ -40,13 +40,13 @@ typing-extensions = "==4.12.2"
 tzdata = "==2025.1"
 urllib3 = "==2.3.0"
 whitenoise = "==6.9.0"
-dotenv = "*"
 argon2-cffi = "*"
 django-axes = "*"
 django-extensions = "*"
-python-dotenv = "*"
 drf-yasg = "*"
 django = "*"
+dotenv = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

@@ -24,11 +24,18 @@ class RestuarantSerializer(serializers.HyperlinkedModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(max_length=10, min_length=10)
     no_of_guests = serializers.IntegerField(min_value=1, max_value=10, default=1)
-    branch = serializers.ChoiceField(choices = Restaurant.objects.values_list('branch', flat=True), required=True)
+    branch = serializers.ChoiceField(choices=[], required=True)
     booking_date = serializers.DateField()
     start_time = serializers.TimeField()
     end_time = serializers.TimeField()
     message = serializers.CharField(max_length=255, required=False, allow_blank=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from .models import Restaurant  # Import here to avoid circular import
+        self.fields['branch'].choices = list(
+            Restaurant.objects.values_list('branch', flat=True)
+        )
     
     class Meta:
         model = Booking

@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, MenuViewSet, BookingViewSet, index, about, menu, book, user_login, user_logout, UserSignUpView, terms_n_conditions
-from .views import RestaurantViewset, HolidayViewSet
+from .views import RestaurantViewset, HolidayViewSet, health_check
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework import permissions
 
@@ -44,7 +44,8 @@ urlpatterns = [
     #Documentation
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-
+    #Health Check
+    path("health/", health_check),
     # path("verify-email/<uidb64>/<token>/", views.verify_email, name="verify_email"),
 ]
 

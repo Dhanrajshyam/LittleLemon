@@ -1,0 +1,88 @@
+	# see https://gist.github.com/KernelA/04b4d7691f28e264f72e76cfd724d448
+
+# Git and VCS
+.git
+.gitattributes
+.github
+.gitignore
+
+# Django and Python
+*.log
+*.sqlite3
+*.db
+*.py[cod]
+__pycache__/
+*.pycache*/
+
+
+# Documentation
+!README.md
+LICENCE
+docs/
+*.md  # optionally keep this if you only want README.md
+
+# Scripts (exclude if only used locally)
+update_readme.py
+update_test_results.py
+
+# Env/venv
+.env/
+*.env
+.env.*
+venv/
+env/
+pipfile
+pipfile.lock
+
+# Build/Test/Packaging
+build/
+dist/
+*.egg-info/
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.pytest_cache/
+tests/
+*/tests/
+.mypy_cache/
+.pytest_cache/
+
+# Static/media (if you collect them externally)
+staticfiles/
+media/
+
+# Docker
+Dockerfile~
+docker-compose.yml~
+.docker
+
+# OS/IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and database
+*.log
+*.sqlite3
+*.db
+
+# Node/npm junk (if any)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+
+# Frontend artifacts
+*.map
+*.cache
+
+
+# Migrations (optional — only if you auto-generate them)
+# **DON'T** ignore if you're tracking migrations in VCS
+# **Uncomment if needed**
+# */migrations/
+
