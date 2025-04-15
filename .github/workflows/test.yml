@@ -54,7 +54,7 @@ jobs:
           DATABASE_ENGINE: django.db.backends.postgresql
           DATABASE_NAME: test_db
           DATABASE_USER: test_user
-          USER_PASSWORD: testpassword
+          DATABASE_PASSWORD: testpassword
           DATABASE_HOST: 127.0.0.1
           DATABASE_PORT: 5432
         run: |
@@ -67,7 +67,7 @@ jobs:
           DATABASE_ENGINE: django.db.backends.postgresql
           DATABASE_NAME: test_db
           DATABASE_USER: test_user
-          USER_PASSWORD: testpassword
+          DATABASE_PASSWORD: testpassword
           DATABASE_HOST: 127.0.0.1
           DATABASE_PORT: 5432
           GITHUB_ACTIONS: true
