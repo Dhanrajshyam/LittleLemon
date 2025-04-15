@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 from datetime import timedelta
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv('.env.local')
 
 # Default to local development settings
 ENVIRONMENT = os.getenv('DJANGO_ENV', 'development')
@@ -29,13 +29,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@mvbih#nvlz%xs1thyud*#mlm97p+0g1mr)&6g_)c0$-os!rxz'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = (os.environ.get('DEBUG') == "True")
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 ALLOWED_HOSTS.append('testserver')
+CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS","https://127.0.0.1").split(",")
 
 # Custom User Model
 AUTH_USER_MODEL = "Restaurant.CustomUser"
@@ -61,15 +63,22 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'axes.middleware.AxesMiddleware',
+    'django.middleware.security.SecurityMiddleware',  # First: Security-related middleware
+    'django.contrib.sessions.middleware.SessionMiddleware',  # Second: Handle sessions (before authentication)
+    'django.middleware.common.CommonMiddleware',  # Third: Common middleware (URL handling, etc.)
+    'django.middleware.csrf.CsrfViewMiddleware',  # Fourth: CSRF protection (depends on session)
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # Fifth: Handle authentication (depends on sessions)
+    'axes.middleware.AxesMiddleware',  # Sixth: Brute-force protection (after authentication)
+    
+    # **GZipMiddleware**: Compresses response content (HTML, CSS, JS, JSON) to reduce bandwidth usage and improve performance.
+    # It should be placed after session and authentication middleware, but before response is sent to the client.
+    'django.middleware.gzip.GZipMiddleware',  # Seventh: Enable GZip compression (for better performance)
+
+    'django.contrib.messages.middleware.MessageMiddleware',  # Eighth: User messages (after authentication)
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',  # Ninth: Clickjacking protection (after messages)
 ]
+
+
 
 ROOT_URLCONF = 'Littlelemon.urls'
 
@@ -111,44 +120,58 @@ WSGI_APPLICATION = 'Littlelemon.wsgi.application'
 
 # If you are using MySQL, uncomment the above DATABASES setting and comment the below DATABASES setting. Update your database settings in the .env file or here directly.
 
-if ENVIRONMENT == 'development':
-    DATABASES = {
+DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DATABASE_NAME'),
-            'USER': os.getenv('DATABASE_USER'),
-            'PASSWORD': os.getenv('USER_PASSWORD'),
-            'HOST': os.getenv('DATABASE_HOST'),
-            'PORT': os.getenv('DATABASE_PORT'),
+            'ENGINE': os.environ.get('DATABASE_ENGINE'),
+            'NAME': os.environ.get('DATABASE_NAME'),
+            'USER': os.environ.get('DATABASE_USER'),
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD'),    
+            'HOST': os.environ.get('DATABASE_HOST'), # For local development, use 'localhost' or '127.0.0.1'
+            'PORT': os.environ.get('DATABASE_PORT'), # Default PostgreSQL port is usually '5432'
             'TEST': {
                 'NAME': 'test_db',  # Separate test database
             },
         }
     }
 
-elif ENVIRONMENT == 'test':  # For GitHub Actions test.yml
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DATABASE_NAME'),
-            'USER': os.getenv('DATABASE_USER'),
-            'PASSWORD': os.getenv('USER_PASSWORD'),
-            'HOST': os.getenv('DATABASE_HOST'),
-            'PORT': os.getenv('DATABASE_PORT'),
-        }
-    }
+# if ENVIRONMENT == 'development':
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': os.environ.get('DATABASE_ENGINE'),
+#             'NAME': os.environ.get('DATABASE_NAME'),
+#             'USER': os.environ.get('DATABASE_USER'),
+#             'PASSWORD': os.environ.get('DATABASE_PASSWORD'),    
+#             'HOST': os.environ.get('DATABASE_HOST'), # For local development, use 'localhost' or '127.0.0.1'
+#             'PORT': os.environ.get('DATABASE_PORT'), # Default PostgreSQL port is usually '5432'
+#             'TEST': {
+#                 'NAME': 'test_db',  # Separate test database
+#             },
+#         }
+#     }
 
-elif ENVIRONMENT == 'production':  # For Render or Heroku
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DATABASE_NAME'),
-            'USER': os.getenv('DATABASE_USER'),
-            'PASSWORD': os.getenv('USER_PASSWORD'),
-            'HOST': os.getenv('DATABASE_HOST'),
-            'PORT': os.getenv('DATABASE_PORT'),
-        }
-    }
+# elif ENVIRONMENT == 'test':  # For GitHub Actions test.yml
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': os.getenv('DATABASE_NAME'),
+#             'USER': os.getenv('DATABASE_USER'),
+#             'PASSWORD': os.getenv('USER_PASSWORD'),
+#             'HOST': os.getenv('DATABASE_HOST'),
+#             'PORT': os.getenv('DATABASE_PORT'),
+#         }
+#     }
+
+# elif ENVIRONMENT == 'production':  # For Render or Heroku
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': os.getenv('DATABASE_NAME'),
+#             'USER': os.getenv('DATABASE_USER'),
+#             'PASSWORD': os.getenv('USER_PASSWORD'),
+#             'HOST': os.getenv('DATABASE_HOST'),
+#             'PORT': os.getenv('DATABASE_PORT'),
+#         }
+#     }
 
 
 
@@ -220,10 +243,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    BASE_DIR / "Restaurant/static",
-]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static",
+#     BASE_DIR / "Restaurant/static",
+# ]
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

@@ -28,6 +28,8 @@ from .permissions import IsBranchManagerOrReadOnly, IsBranchManager
 
 # Create your views here.
 
+def health_check(request):
+    return JsonResponse({"status": "ok"})
 
 def index(request):
     """Homepage of the application"""

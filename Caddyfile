@@ -1,0 +1,14 @@
+http://localhost {
+
+	# Serve static files from ./staticfiles/
+	handle_path /static/* {
+		root * /srv/static
+		file_server
+	}
+
+	# Proxy all other requests to Django via Gunicorn
+	handle {
+		reverse_proxy http://littlelemon-app:8000
+	}
+}
+
