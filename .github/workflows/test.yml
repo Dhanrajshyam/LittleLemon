@@ -45,6 +45,9 @@ jobs:
           pip install -r requirements.txt
           pip install psycopg
 
+      - name: Set DJANGO_SECRET_KEY for tests
+        run: echo "DJANGO_SECRET_KEY=test-secret-key-123" >> $GITHUB_ENV
+
       - name: Run Migrations
         env:
           DJANGO_ENV: test
