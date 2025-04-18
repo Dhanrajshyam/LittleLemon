@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
             renderBookings();
         } catch (err) {
             console.error("Fetch bookings failed:", err);
-            bookingContainer.innerHTML = `<p class="text-danger">Error loading bookings.</p>`;
+            bookingContainer.innerHTML = `<p class="text-danger">Error loading bookings. Please sign in and Try Again</p>`;
         }
     }
 

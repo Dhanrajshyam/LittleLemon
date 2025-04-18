@@ -211,7 +211,7 @@ SESSION_COOKIE_AGE = 3600  # 60 minutes (3600 seconds)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Rate Limiting Settings (Prevent Brute Force Attacks) 
-AXES_FAILURE_LIMIT = 1000  # Block user after 1000 failed login attempts
+AXES_FAILURE_LIMIT = 5  # Block user after 1000 failed login attempts
 AXES_COOLOFF_TIME = 1  # Lockout time in hours (set 1 for 1 hour)
 
 
