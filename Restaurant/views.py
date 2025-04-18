@@ -6,6 +6,9 @@ from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.conf import settings
 
 # From Django Rest Framework
 from rest_framework import viewsets, status
@@ -52,7 +55,7 @@ def menu(request):
     }
     return render(request, 'menu.html', context)
 
-
+@login_required
 def book(request):
     """Book a Reservation in the restaurant"""
     return render(request, 'book.html', {})
